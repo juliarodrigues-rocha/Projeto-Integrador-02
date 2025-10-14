@@ -1,0 +1,116 @@
+.centralizar {
+    text-align: center;
+}
+
+img {
+    width: 100px;
+}
+
+hr {
+    background-color: blue;
+    height: 2px;
+    
+}
+
+.azul {
+    background-color: #213682;
+    color: black;
+    margin: 40px auto;
+    width: 90%; 
+    max-width: 600px;
+    padding: 40px 30px;
+    text-align: center;
+    border-radius: 10px;
+    
+}
+
+.amarelo{
+  display: block;                
+  background:#CFA446;          
+  color: white;
+  margin: 12px auto;            
+  width: 320px;               
+  padding: 12px 18px;          
+  border-radius: 6px;        
+  font-size: 18px;
+}
+
+
+footer {
+  background-color: #1E2C6B;     
+  color: white;                  
+  text-align: center;            
+  padding: 1px 0;               
+  font-family: Arial, sans-serif;
+  font-size: 14px;              
+  bottom: 0;
+  width: 100%;              
+}
+
+
+body {
+  font-family: 'Inter', sans-serif;;
+  background-color: white;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+nav {
+  background-color: #f0f0f0;
+  font-weight: bold;
+  display: flex;
+  justify-content: center; /* mantém os links centralizados */
+  gap: 18rem; /* define o espaço entre os links */
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+form input {
+  display: block;
+  width: 300px;
+  padding: 10px;
+  margin: 10px auto;
+  border: none;
+  background-color: #e6e6e6;
+  font-size: 14px;
+}
+
+form button {
+  background-color: #c89d4f;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 15px;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 3px;
+  transition: background 0.3s;
+}
+
+form button:hover {
+  background-color: #b5893f;
+}
+
+h1 {
+  font-size: 22px;
+  color: white;
+}
+
+input::placeholder {
+    color: #1E2C6B; 
+    opacity: 1; /* Torna a cor mais visível em alguns navegadores */
+}
+
+a {
+  color: #213682;
+  font-size: 14px;
+}
+
+a:hover {
+  color: black;
+}
+
+.input {
+  border-radius: 6px;
+}

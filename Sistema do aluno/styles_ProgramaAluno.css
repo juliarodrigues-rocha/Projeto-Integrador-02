@@ -1,0 +1,245 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+/* geral */
+.centralizar {
+  text-align: center;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+}
+
+img {
+  width: 100px;
+}
+
+hr {
+  background-color: blue;
+  height: 2px;
+}
+
+footer {
+  background-color: #213682;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* css BOTÕES GERAIS  */
+.amarelo {
+  background: #cfa446;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 12px 18px;
+  border-radius: 6px;
+  font-size: 18px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.vermelho {
+  background-color: #8d1515;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 12px 18px;
+  border-radius: 6px;
+  font-size: 18px;
+  text-align: center;
+  text-decoration: none;
+}
+
+/* css Área do Aluno*/
+.azul_index {
+  background-color: #213682;
+  color: white;
+  padding: 40px 30px;
+  border-radius: 4px;
+  margin: 50px auto;
+  text-align: center;
+  width: 45%;
+}
+
+.botoes_coluna_index {
+  display: block;
+  margin: 12px auto;
+  width: 320px;
+  text-align: center;
+  padding: 12px 18px;
+  border-radius: 6px;
+  font-size: 18px;
+  text-decoration: none;
+}
+
+/* css cadastro_aluno*/
+
+.form-cadastro input[type="text"],
+.form-cadastro input[type="email"],
+.form-cadastro input[type="tel"] {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 5px;
+  border: none;
+  border-radius: 3px;
+}
+
+.azul_cadastrar_aluno {
+  background-color: #213682;
+  color: #fff;
+  padding: 30px 20px;
+  border-radius: 12px;
+  margin: 50px auto;
+  text-align: center;
+  width: 450px;
+}
+
+.azul_cadastrar_aluno form {
+  height: 100%;
+  text-align: left;
+  padding: 0px 30px 5px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.azul_cadastrar_aluno form input {
+  width: 100%;
+  padding: 5px;
+  box-sizing: border-box;
+  margin-bottom: 5px;
+}
+
+.botoes_cadastrar_aluno {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 14px;
+}
+
+/* css Consultar de livro */
+
+.azul_consultar_livro {
+  background-color: #213682;
+  color: white;
+  padding: 30px 20px;
+  border-radius: 8px;
+  margin: 40px auto;
+  text-align: center;
+  width: 550px;
+}
+.azul_consultar_livro form {
+  text-align: left;
+  padding: 0px 40px;
+}
+
+.azul_consultar_livro form input {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 5px;
+  box-sizing: border-box;
+}
+
+table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+  background-color: white;
+  color: #333;
+}
+table th,
+table td {
+  border: 1px solid #aaa;
+  padding: 8px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.botoes_consultar_livro {
+  margin-top: 14px;
+  display: flex;
+  justify-content: space-around;
+}
+
+/* MINHA PONTUAÇÃO */
+.azul_pontuação {
+  background-color: #213682;
+  color: white;
+  padding: 30px 35px;
+  border-radius: 12px;
+  margin: 55px auto;
+  text-align: left;
+  width: 55%;
+  max-width: 750px;
+  position: relative;
+}
+
+
+.azul_pontuação h1 {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+
+.azul_pontuação form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.azul_pontuação form label {
+  font-weight: bold;
+}
+
+.azul_pontuação form input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  margin-top: 5px;
+}
+
+
+table {
+  width: 100%;
+  margin: 20px 0;
+  border-collapse: collapse;
+  background-color: white;
+  color: #333;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+table th,
+table td {
+  border: 1px solid #ccc;
+  padding: 10px 12px;
+  text-align: center;
+  font-size: 14px;
+}
+
+
+.sair {
+  display: inline-block;
+  margin-top: 7px;
+  background-color: #b32020;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+

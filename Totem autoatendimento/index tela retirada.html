@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles tela retirada.css">
+    <title>Tela de retirada</title>
+</head>
+<body>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Logo_PUC-Campinas.svg/750px-Logo_PUC-Campinas.svg.png" alt="Logo da Puc">
+    <hr>
+
+    <nav>
+        <a href="index tela devolucao.html">Devolução de Livros</a>
+        <a href="index autoatendimento.html">Voltar</a>
+    </nav>
+
+    <div class="azul centralizar">
+        <h1>Retirada</h1><br>
+        <form>
+            <label for="ra"></label>
+            <input type="text" class="input" id="ra" name="ra" pattern="\d{8}" title="Digite exatamente 8 números" placeholder="RA:" required><br>
+            <label for="codigoLivro"></label>
+            <input type="text" class="input" id="codigoLivro" name="codigoLivro" pattern="\d{3}" title="Digite até 3 números" placeholder="Código do livro:" required><br>
+            <button type="submit">Confirmar Retirada</button>
+        </form>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 PUC-Campinas. Todos os direitos reservados.</p>
+    </footer>
+</body>
+</html>
