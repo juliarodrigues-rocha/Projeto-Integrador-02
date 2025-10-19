@@ -1,0 +1,83 @@
+/* header */
+header img {
+    width: 147px;
+}
+
+header hr {
+    height: 2px;
+    background-color: #213682;
+    border: none; 
+}
+*{
+     font-family: "Roboto", sans-serif;
+}
+/* main */
+.azul_cadastrar_livro {
+  background-color: #213682;
+  color: #fff;
+  padding: 30px 20px;
+  border-radius: 12px;
+  margin: 50px auto;
+  text-align: center;
+  width: 450px;
+}
+
+.azul_cadastrar_livro h1 {
+  margin-bottom: 20px;
+  font-size: 32px;
+  text-align: center;
+}
+
+.form-cadastro-livro {
+  text-align: left;
+  padding: 0px 30px 5px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-cadastro-livro input[type="text"],
+.form-cadastro-livro input[type="number"] {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 5px;
+  border: none;
+  border-radius: 3px;
+  color: #213682;
+  background-color: #dadada;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.botoes_cadastrar_livro {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 14px;
+}
+
+.botoes_cadastrar_livro button {
+  background-color: #cfa446;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 25px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.3s;
+}
+
+.botoes_cadastrar_livro button:hover {
+  background-color: #b58c3e;
+}
+
+/* footerrr */
+footer {
+    background-color: #213682;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    
+}
