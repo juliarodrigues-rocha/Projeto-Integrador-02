@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar</title>
-    <link rel="stylesheet" href="front aluno styles.css">
+    <link rel="stylesheet" href="../front aluno styles.css">
 </head>
 <body>
     <img src="//upload.wikimedia.org/wikipedia/commons/thumb/3/31/Logo_PUC-Campinas.svg/750px-Logo_PUC-Campinas.svg.png"
-         alt="Logo da Puc">
+         alt="Logo da PUC-Campinas">
     <hr>
      
     <div class="azul_cadastrar_aluno">
         <h1 class="centralizar">Cadastrar</h1>
-        <form>
+        <form id="formCadastro">
             <div>
                 <label for="ra">RA:</label>
                 <input type="text" id="ra" name="ra">
@@ -30,9 +30,11 @@
                 <label for="telefone">Telefone:</label>
                 <input type="text" id="tel" name="tel">
             </div>
+
+            <p id="mensagem"></p> 
             <div class="centralizar botoes_cadastrar_aluno">
-                <a class="vermelho" href="index front aluno.html">Voltar</a>
-                <a class="amarelo" href="#">Cadastrar</a>
+                <a class="vermelho" href="../index front aluno.html">Voltar</a>
+                <button class="amarelo" type="submit">Cadastrar</button>
             </div>
         </form>
     </div>
@@ -40,5 +42,6 @@
     <footer>
         © 2025 PUC-Campinas. Todos os direitos reservados.
     </footer>
+    <script src="../Js/cadastraAluno.js"></script>
 </body>
 </html>
