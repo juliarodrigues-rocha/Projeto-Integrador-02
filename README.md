@@ -30,7 +30,7 @@ Abra o CMD
 
 2 - cd Projeto-Integrador-02
 
-3 - cd  cd "Sistema do bibliotecario"
+3 - cd "Sistema do bibliotecario"
 
 4 - code . (isso aqui vai abrir o vscode)
 
