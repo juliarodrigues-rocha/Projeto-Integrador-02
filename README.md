@@ -16,3 +16,28 @@ O objetivo é aplicar, de forma prática, os conhecimentos adquiridos em sala de
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" width="50" height="50" alt="MySQL"/>
 </p>
 
+
+# Como rodar backend do sistema de bibliotecario
+
+É necessário ter: 
+
+Node.js . Verifique com node -v.
+npm (vem com o Node). Verifique com npm -v.
+
+Abra o CMD 
+
+1 - git clone https://github.com/juliarodrigues-rocha/Projeto-Integrador-02.git
+
+2 - cd Projeto-Integrador-02
+
+3 - cd  cd "Sistema do bibliotecario"
+
+4 - code . (isso aqui vai abrir o vscode)
+
+5 - Abra um terminal no vscode 
+
+6 -  digite "npm install" (ele irá baixar tudo que precisa)
+
+7- digite "node server.js"
+
+Prontinho, o backend vai está rodando.
