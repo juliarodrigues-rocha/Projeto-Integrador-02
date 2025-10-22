@@ -20,6 +20,11 @@ app.post('/api/livros', async (req, res) => {
     return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
   }
 
+  if (isNaN(codigo) || !Number.isInteger(Number(codigo))) {
+    return res.status(400).json({ error: 'O código deve conter apenas números inteiros.' });
+  }
+
+
   if (isNaN(quantidade) || Number(quantidade) < 1) {
     return res.status(400).json({ error: 'A quantidade deve ser um número >= 1.' });
   }
