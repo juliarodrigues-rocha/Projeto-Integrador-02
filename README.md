@@ -17,6 +17,7 @@ O objetivo é aplicar, de forma prática, os conhecimentos adquiridos em sala de
 </p>
 
 
+
 # Como rodar backend do sistema de bibliotecario
 
 É necessário ter: 
@@ -36,8 +37,10 @@ Abra o CMD
 
 5 - Abra um terminal no vscode 
 
-6 -  digite "npm install" (ele irá baixar tudo que precisa)
+6 - digite 'npm init -y'
 
-7- digite "node server.js"
+7 -  digite "npm install" (ele irá baixar tudo que precisa)
+
+8 - digite "node server.js"
 
 Prontinho, o backend vai está rodando.
