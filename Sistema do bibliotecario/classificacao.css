@@ -1,0 +1,164 @@
+body {
+    font-family: Arial, sans-serif; 
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    color: #1f1f1f;
+}
+
+
+header {
+    background-color: #f7f7f7;
+    padding: 15px 3px 0;
+    box-sizing: border-box;
+}
+
+img {
+    width: 100px;
+    height: auto;
+    background-color: #d9d9d9;
+    border-radius: 5px;
+}
+
+hr {
+  background-color: #1E2C6B;
+  height: 3px;
+  border: none;
+  margin-top: 10px;
+}
+
+
+/* ===== Níveis ===== */
+.niveis {
+    margin: 35px auto 25px;
+    width: fit-content;
+}
+
+.niveis p {
+    background-color: #d9d9d9;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 16px;
+    width: 230px;
+    margin: 8px auto;
+    color: #213682;
+}
+
+.niveis span {
+    font-weight: bold;
+    color: #16245a;
+}
+
+/* ===== Campo de busca ===== */
+.containerPesquisar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 25px auto 40px;
+    gap: 6px;
+}
+
+.inputPesquisar {
+    width: 450px;
+    height: 42px;
+    padding: 0 15px;
+    border: 2px solid #213682;
+    border-radius: 8px;
+    background-color: #d9d9d9;
+    color: #213682;
+    font-size: 15px;
+    outline: none;
+}
+
+.inputPesquisar:focus {
+    background-color: #e6e9f8;
+    box-shadow: 0 0 8px rgba(33, 54, 130, 0.4);
+}
+
+.botaoPesquisar {
+    height: 42px;
+    width: 42px;
+    border: none;
+    background-color: #213682;
+    color: white;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.botaoPesquisar:hover {
+    background-color: #16245a;
+}
+
+/* ===== Ranking ===== */
+.containerRanking {
+    background-color: #213682;
+    color: white;
+    max-width: 800px;
+    margin: 0 auto 60px;
+    padding: 35px 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.tituloRanking {
+    text-align: center;
+    font-size: 26px;
+    margin-bottom: 25px;
+    font-weight: 700; /*Deixa o título em negrito*/
+}
+
+.tabelaRanking {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    color: #213682;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.tabelaRanking th,
+.tabelaRanking td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.tabelaRanking th {
+    background-color: #e6e9f8;
+    font-weight: 600;
+}
+
+.tabelaRanking tbody tr:nth-child(even) {
+    background-color: #f5f6fa;
+}
+
+.tabelaRanking tbody tr:hover {
+    background-color: #e8ebff;
+}
+
+/* ===== Botão Voltar ===== */
+.btnVoltar {
+    display: block;
+    width: fit-content;
+    margin: 0 auto 60px;
+    padding: 13px 35px;
+    background-color: #b94a48;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 20px;
+}
+
+.btnVoltar:hover {
+    background-color: #992e2b;
+}
+
+/* ===== Footer ===== */
+footer {
+    background-color: #213682;
+    color: white;
+    text-align: center;
+    padding: 1px;
+    font-size: 15px;
+}

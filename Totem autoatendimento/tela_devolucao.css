@@ -2,24 +2,30 @@
     text-align: center;
 }
 
-img {
-    width: 100px;
-}
+header{
+  padding: 15px 3px 0;
+ }
+ 
+img { 
+  width: 100px; 
+  height: auto;
+  background-color: #d9d9d9;
+  border-radius: 5px;
+} 
 
 hr {
-    background-color: blue;
     height: 2px;
-    border: none;
-    
+    background-color: #213682;
+    order: none;
 }
 
 .azul { 
   background-color: #213682; 
   color: white; 
-  margin: 130px auto 100px; /* top, sides, bottom */
-  width: 60%; 
+  margin: 90px auto 100px; /* top, sides, bottom */
+  width: 30%; 
   max-width: 600px;
-  padding: 50px 20px; 
+  padding: 40px 20px; 
   text-align: center; 
   border-radius: 10px; 
 }
@@ -72,8 +78,8 @@ nav {
 form input {
   display: block;
   width: 300px;
-  padding: 10px;
-  margin: 10px auto;
+  padding: 10px; /*grossura dos inputs*/
+  margin: 3px auto;
   border: none;
   background-color: #e6e6e6;
   font-size: 14px;
@@ -84,19 +90,19 @@ form button {
   color: white;
   border: none;
   padding: 10px 20px;
-  margin-top: 15px;
+  margin-top: 10px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   border-radius: 3px;
   transition: background 0.3s;
 }
 
 form button:hover {
-  background-color: #b5893f;
+  background-color: #ab7c2a;
 }
 
 h1 {
-  font-size: 22px;
+  font-size: 26px;
   color:white;
 }
 

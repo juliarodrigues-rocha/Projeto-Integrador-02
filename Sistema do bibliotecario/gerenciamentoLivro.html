@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="gerenciamento.css">
 </head>
 <body>
-    <!-- CABECALHO -->
+    
     <header>
          <img  src="//upload.wikimedia.org/wikipedia/commons/thumb/3/31/Logo_PUC-Campinas.svg/750px-Logo_PUC-Campinas.svg.png"
         alt="Logo da Puc">
@@ -15,71 +15,48 @@
     </header>
 
     <main>
-        <div class="container">
+    <div class="container">
         <h1>Gerenciamento de livros</h1>
         <table>
-        <thead>
-            <tr>
-            <th>Título</th>
-            <th>ISBN</th>
-            <th>Status</th>
-            <th>Ação</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-            <td>Titulo1</td>
-            <td>010203</td>
-            <td>Disponível</td>
-            <td>
-                <button class="btn editar">Editar</button>
-                <button class="btn deletar">Deletar</button>
-            </td>
-            </tr>
-            <tr>
-            <td>Titulo1</td>
-            <td>010203</td>
-            <td>Emprestado</td>
-            <td>
-                <button class="btn editar">Editar</button>
-                <button class="btn deletar">Deletar</button>
-            </td>
-            </tr>
-            <tr>
-            <td>Titulo1</td>
-            <td>010203</td>
-            <td>Disponível</td>
-            <td>
-                <button class="btn editar">Editar</button>
-                <button class="btn deletar">Deletar</button>
-            </td>
-            </tr>
-            <tr>
-            <td>Titulo1</td>
-            <td>010203</td>
-            <td>Emprestado</td>
-            <td>
-                <button class="btn editar">Editar</button>
-                <button class="btn deletar">Deletar</button>
-            </td>
-            </tr>
-            <tr>
-            <td>Titulo1</td>
-            <td>010203</td>
-            <td>Disponível</td>
-            <td>
-                <button class="btn editar">Editar</button>
-                <button class="btn deletar">Deletar</button>
-            </td>
-            </tr>
-        </tbody>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Título</th>
+                    <th>Status</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Cód1</td>
+                    <td>Título1</td>
+                    <td>
+                        <span class='status-disponivel'>Disponível</span>
+                    </td>
+                    <td>
+                        <button class="btn editar">Editar</button>
+                        <button class="btn deletar" onclick="if(!confirm('Tem certeza que deseja deletar este livro?')) return;">Deletar</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Cod2</td>
+                    <td>Título2</td>
+                    <td>
+                        <span class='status-emprestado'>Emprestado</span>
+                    </td>
+                    <td>
+                        <button class="btn editar">Editar</button>
+                        <button class="btn deletar" onclick="if(!confirm('Tem certeza que deseja deletar este livro?')) return;">Deletar</button>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
-    </body>
-    </main>
 
-    <footer>
-        © 2025 PUC-Campinas. Todos os direitos reservados.
-    </footer>
-
+    <a class="btnVermelho" href="indexBibliotecario.html">Voltar</a>
+</main>
+<footer>
+    <p>&copy; 2025 PUC-Campinas. Todos os direitos reservados.</p>
+</footer>
 </body>
+</html>

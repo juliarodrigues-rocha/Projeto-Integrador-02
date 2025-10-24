@@ -1,91 +1,134 @@
-/* header */
-header img {
-    width: 147px;
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6fc;
+    margin: 0;
 }
 
-header hr {
+header{
+  padding: 15px 3px 0;
+ }
+ 
+img { 
+  width: 100px; 
+  height: auto;
+  background-color: #d9d9d9;
+  border-radius: 5px;
+} 
+
+ hr {
     height: 2px;
     background-color: #213682;
-    border: none; 
+    order: none;
 }
-
-/* main */
 
 .container {
-  max-width: 900px;
-  height: 350px;
-  margin: 40px auto;
-  padding: 20px;
-  background-color: #213682; 
-  color: white;
-  font-family: Arial, sans-serif;
-  text-align: center;
-  margin-top: 230px;
-  margin-bottom: 150px;
-
+    max-width: 900px;
+    margin: 60px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    text-align: center;
 }
-
 
 h1 {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 20px;
-}
+    color: #213682;
+    font-size: 26px;
+    margin-bottom: 20px;
 
-
+  }
 table {
-  width: 863px;
-  
-  border-collapse: collapse;
-  background-color: white;
-  color: #213682;
-  margin: 0 auto; 
+    width: 100%;
+    border-collapse: collapse;
 }
 
-
-
-thead th {
-  padding: 10px;
-  font-weight: 600;
-  border: 2px solid #213682;
-  font-size: 18px;
+thead {
+    background-color: #213682;
+    color: #fff;
 }
 
-
-tbody td {
-  border: 2px solid #213682;
-  padding: 10px;
-  font-size: 16px;
+th, td {
+    padding: 12px;
+    font-size: 15px;
+    border-bottom: 1px solid #dcdcdc;
 }
 
-/* Botões */
+tbody tr:hover {
+    background-color: #f1f5ff;
+}
+
 .btn {
-  border: none;
-  padding: 6px 10px;
-  margin: 0 3px;
-  font-size: 12px;
-  cursor: pointer;
-  border-radius: 3px;
+    border: none;
+    padding: 6px 12px;
+    margin: 0 4px;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 6px;
+    color: #fff;
+    transition: opacity .2s;
+}
+
+.btn:hover {
+    opacity: 0.8;
+}
+
+.btn.editar { 
+  background-color: #e5b536; 
+}
+        
+.btn.deletar { 
+  background-color: #c62828; 
+
+}
+
+.status-disponivel { 
+  background:#e8f9e8; 
+  color:#2e7d32; 
+  padding:4px 10px; 
+  border-radius:12px; 
+  font-weight:600; 
+}
+
+.status-emprestado { 
+  background:#fff4e5; 
+  color:#b26a00; 
+  padding:4px 10px; 
+  border-radius:12px; 
+  font-weight:600;
+}
+
+.btnVermelho {
+  background-color: #910606;
   color: white;
+  margin: 35px auto;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 20px;
+  display: block;             
+  width: fit-content;          
+  text-align: center;          
+  text-decoration: none; /*Tira o underline do botão voltar*/
 }
 
-
-.btn.editar {
-  background-color: #d4aa21; }
-
-
-.btn.deletar {
-  background-color: #b41c14; 
+.btnVermelho:hover {
+  background-color: #b82906;
 }
 
-/* footer */
 footer {
     background-color: #213682;
     color: white;
     text-align: center;
-    padding: 10px;
- 
-    left: 0;
+    padding: 1px;
     width: 100%;
-   
+    font-size: 15px;
+}
+
+html, body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
 }

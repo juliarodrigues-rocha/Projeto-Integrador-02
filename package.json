@@ -1,0 +1,20 @@
+{
+  "name": "projeto-integrador-02",
+  "version": "1.0.0",
+  "description": "Este repositório reúne o **Projeto Integrador** desenvolvido por um grupo de **5 estudantes** do curso de **Sistemas de Informação** durante o segundo semestre.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juliarodrigues-rocha/Projeto-Integrador-02.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/juliarodrigues-rocha/Projeto-Integrador-02/issues"
+  },
+  "homepage": "https://github.com/juliarodrigues-rocha/Projeto-Integrador-02#readme"
+}

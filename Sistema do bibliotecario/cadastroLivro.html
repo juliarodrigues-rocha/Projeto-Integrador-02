@@ -3,25 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cadastro de Livro</title>
+  <title>Área do Bibliotecário</title>
   <link rel="stylesheet" href="cadastroLivro.css">
 </head>
 <body>
 
   <header>
-    <img src="//upload.wikimedia.org/wikipedia/commons/thumb/3/31/Logo_PUC-Campinas.svg/750px-Logo_PUC-Campinas.svg.png"
-         alt="Logo da Puc">
+    <img src="//upload.wikimedia.org/wikipedia/commons/thumb/3/31/Logo_PUC-Campinas.svg/750px-Logo_PUC-Campinas.svg.png" alt="Logo da Puc" class="logo">
     <hr>
   </header>
-
 
   <main>
     <section class="azul_cadastrar_livro">
       <h1>Cadastro de Livro</h1>
-
       <form class="form-cadastro-livro">
+
         <label for="codigo">Código:</label>
-        <input type="text" id="codigo" name="codigo" placeholder="Ex: L001">
+        <input type="text" id="codigo" name="codigo" placeholder="Ex: 12345">
 
         <label for="titulo">Título:</label>
         <input type="text" id="titulo" name="titulo" placeholder="Título do livro">
@@ -39,21 +37,23 @@
         <input type="text" id="editora" name="editora" placeholder="Ex: Companhia das Letras">
 
         <div class="botoes_cadastrar_livro">
-            <button type="reset">Limpar</button>
-          <button type="submit">Cadastrar</button>
-          
+          <a class="btnVermelho" href="indexBibliotecario.html">Voltar</a>
+          <button type="reset">Limpar</button>
+          <button type="submit">Cadastrar</button> 
         </div>
+
       </form>
     </section>
   </main>
 
  
   <footer>
-    © 2025 PUC-Campinas. Todos os direitos reservados.
+      <p>&copy; 2025 PUC-Campinas. Todos os direitos reservados.</p>
   </footer>
 
-  <script>
 
+
+  <script>
     document.querySelector("form").addEventListener("submit", async (e) => {
       e.preventDefault();
 
