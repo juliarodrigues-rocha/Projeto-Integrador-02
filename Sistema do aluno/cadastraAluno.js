@@ -10,12 +10,15 @@ document.addEventListener("DOMContentLoaded", function () {
   function validarRA(ra) {
     return /^[0-9]{5,}$/.test(ra);
   }
+
   function validarNome(nome) {
     return /^[A-Za-zÀ-ÖØ-öø-ÿ\s]{3,}$/.test(nome);
   }
+
   function validarEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
+
   function validarTelefone(tel) {
     return /^[0-9]{8,}$/.test(tel);
   }
@@ -52,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const dados = await resposta.json();
-      mostrarMensagem(dados.mensagem, "green");
+      mostrarMensagem(dados.mensagem || "Aluno cadastrado com sucesso!", "green");
       form.reset();
     } catch (erro) {
       mostrarMensagem("Erro ao cadastrar aluno!", "red");
