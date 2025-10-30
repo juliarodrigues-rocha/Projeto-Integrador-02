@@ -1,26 +1,28 @@
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
+import mysql from 'mysql2/promise';
 
+const dbConfig = {
+  host: 'YOUR_MYSQL_HOST',
+  user: 'YOUR_MYSQL_USER',
+  password: 'YOUR_MYSQL_PASSWORD',
+  database: 'YOUR_MYSQL_DATABASE'
+};
 
 export async function openDb() {
-  return open({
-    filename: './livros.db',
-    driver: sqlite3.Database
-  });
+  return await mysql.createConnection(dbConfig);
 }
-
 
 export async function createTable() {
   const db = await openDb();
-  await db.exec(`
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS livros (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      codigo TEXT UNIQUE NOT NULL,
-      titulo TEXT NOT NULL,
-      autor TEXT NOT NULL,
-      quantidade INTEGER NOT NULL CHECK (quantidade >= 1),
-      categoria TEXT NOT NULL,
-      editora TEXT NOT NULL
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      codigo VARCHAR(255) UNIQUE NOT NULL,
+      titulo VARCHAR(255) NOT NULL,
+      autor VARCHAR(255) NOT NULL,
+      quantidade INT NOT NULL DEFAULT 1,
+      categoria VARCHAR(255) NOT NULL,
+      editora VARCHAR(255) NOT NULL
     );
   `);
+  db.end(); // Fechar a conexão após a criação da tabela
 }

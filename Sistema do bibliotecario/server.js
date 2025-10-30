@@ -10,7 +10,8 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('.'));
 
-createTable();
+// A tabela será criada automaticamente quando o servidor iniciar, no arquivo database.js
+// createTable();
 
 
 app.post('/api/livros', async (req, res) => {
@@ -33,17 +34,19 @@ app.post('/api/livros', async (req, res) => {
     const db = await openDb();
 
   
-    const existing = await db.get('SELECT * FROM livros WHERE codigo = ?', [codigo]);
-    if (existing) {
+    const [rows] = await db.execute('SELECT * FROM livros WHERE codigo = ?', [codigo]);
+    if (rows.length > 0) {
+      db.end();
       return res.status(400).json({ error: 'Código já cadastrado. Informe outro.' });
     }
 
-    await db.run(
+    await db.execute(
       `INSERT INTO livros (codigo, titulo, autor, quantidade, categoria, editora)
        VALUES (?, ?, ?, ?, ?, ?)`,
       [codigo, titulo, autor, quantidade, categoria, editora]
     );
 
+    db.end();
     res.json({ message: 'Livro cadastrado com sucesso!' });
   } catch (err) {
     console.error(err);
@@ -54,7 +57,8 @@ app.post('/api/livros', async (req, res) => {
 
 app.get('/api/livros', async (req, res) => {
   const db = await openDb();
-  const livros = await db.all('SELECT * FROM livros');
+  const [livros] = await db.execute('SELECT * FROM livros');
+  db.end();
   res.json(livros);
 });
 
