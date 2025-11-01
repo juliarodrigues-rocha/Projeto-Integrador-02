@@ -31,35 +31,38 @@ document.addEventListener("DOMContentLoaded", function () {
     const email = document.getElementById("email").value.trim();
     const telefone = document.getElementById("tel").value.trim();
 
+    // Novo: Verifica se todos os campos estão em branco
+    if (!ra && !nome && !email && !telefone) {
+      mostrarMensagem("Todos os campos estão em branco, por favor, preencha para realizar o cadastro.", "red");
+      return;
+    }
+
     if (!validarRA(ra))
       return mostrarMensagem("RA inválido. Deve conter apenas números e mínimo 5 dígitos.", "red");
     if (!validarNome(nome))
-      return mostrarMensagem("Nome inválido. Deve conter pelo menos 3 letras.", "red");
+      return mostrarMensagem("Nome inválido. Deve conter apenas letras.", "red");
     if (!validarEmail(email))
       return mostrarMensagem("Email inválido.", "red");
     if (!validarTelefone(telefone))
       return mostrarMensagem("Telefone inválido. Deve conter apenas números e mínimo 8 dígitos.", "red");
 
     try {
-      const resposta = await fetch("http://localhost:3000/alunos/cadastraAluno", {
+      const resposta = await fetch("http://localhost:3000/alunos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ra, nome, email, tel: telefone }),
+        body: JSON.stringify({ ra, nome, email, telefone }),
       });
 
       if (!resposta.ok) {
-        const erroTexto = await resposta.text();
-        mostrarMensagem(`Erro do servidor: ${resposta.status}`, "red");
-        console.error("Erro:", erroTexto);
+        const erroData = await resposta.json();
+        mostrarMensagem(erroData.message || `Erro do servidor: ${resposta.status}`, "red");
         return;
       }
 
-      const dados = await resposta.json();
-      mostrarMensagem(dados.mensagem || "Aluno cadastrado com sucesso!", "green");
+      mostrarMensagem("Cadastro realizado com sucesso!", "green");
       form.reset();
     } catch (erro) {
-      mostrarMensagem("Erro ao cadastrar aluno!", "red");
-      console.error(erro);
+      mostrarMensagem("Erro ao conectar ao servidor. Tente novamente mais tarde.", "red");
     }
   });
 });
