@@ -1,10 +1,10 @@
 import mysql from 'mysql2/promise';
 
 const dbConfig = {
-  host: '127.0.0.1',
-  user: 'root',
-  password: 'Julia180882*', // Substitua pela sua senha do MySQL
-  database: 'biblioteca'
+  host: process.env.DB_HOST || '127.0.0.1',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'Julia180882*', // Substitua pela sua senha do MySQL
+  database: process.env.DB_DATABASE || 'biblioteca'
 };
 
 export async function openDb() {

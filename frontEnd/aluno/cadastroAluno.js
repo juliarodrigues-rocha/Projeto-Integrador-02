@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function validarRA(ra) {
-    return /^[0-9]{5,}$/.test(ra);
+    return /^[0-9]{5,8}$/.test(ra);
   }
 
   function validarNome(nome) {
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function validarTelefone(tel) {
-    return /^[0-9]{8,}$/.test(tel);
+    return /^[0-9]{8,11}$/.test(tel);
   }
 
   form.addEventListener("submit", async function (e) {
@@ -38,13 +38,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (!validarRA(ra))
-      return mostrarMensagem("RA inválido. Deve conter apenas números e mínimo 5 dígitos.", "red");
+      return mostrarMensagem("RA inválido. Deve conter apenas números, mínimo 5 e máximo 8 caracteres.", "red");
     if (!validarNome(nome))
       return mostrarMensagem("Nome inválido. Deve conter apenas letras.", "red");
     if (!validarEmail(email))
       return mostrarMensagem("Email inválido.", "red");
     if (!validarTelefone(telefone))
-      return mostrarMensagem("Telefone inválido. Deve conter apenas números e mínimo 8 dígitos.", "red");
+      return mostrarMensagem("Telefone inválido. Deve conter apenas números, mínimo 8 e máximo 11 números.", "red");
 
     try {
       const resposta = await fetch("http://localhost:3000/alunos", {
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (!resposta.ok) {
         const erroData = await resposta.json();
-        mostrarMensagem(erroData.message || `Erro do servidor: ${resposta.status}`, "red");
+        mostrarMensagem(erroData.mensagem || erroData.message || `Erro do servidor: ${resposta.status}`, "red");
         return;
       }
 

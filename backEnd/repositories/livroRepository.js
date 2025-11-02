@@ -1,12 +1,12 @@
 import { openDb } from '../database/conexao.js';
 
-export class Livro {
-  static async cadastrar(codigo, titulo, autor, quantidade, categoria, editora) {
+export class LivroRepository {
+  static async cadastrar(livro) {
     const db = await openDb();
     try {
       const [result] = await db.execute(
         'INSERT INTO LIVRO (CODIGO, TITULO, AUTOR, QTD, CATEGORIA, EDITORA) VALUES (?, ?, ?, ?, ?, ?)',
-        [codigo, titulo, autor, quantidade, categoria, editora]
+        [livro.codigo, livro.titulo, livro.autor, livro.quantidade, livro.categoria, livro.editora]
       );
       return result.affectedRows > 0;
     } catch (error) {

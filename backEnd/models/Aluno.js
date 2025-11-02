@@ -6,5 +6,5 @@ class Aluno {
     this.telefone = telefone;
   }
 }
-module.exports = Aluno;
+export default Aluno;
 

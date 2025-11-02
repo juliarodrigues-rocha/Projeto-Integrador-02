@@ -1,19 +1,19 @@
 import { openDb } from '../database/conexao.js';
 
-export class Aluno {
-  static async cadastrar(ra, nome, email, telefone) {
+export class AlunoRepository {
+  static async cadastrar(aluno) {
     const db = await openDb();
     try {
       const [result] = await db.execute(
         'INSERT INTO ALUNO (RA, NOME, EMAIL, TELEFONE) VALUES (?, ?, ?, ?)',
-        [ra, nome, email, telefone]
+        [aluno.ra, aluno.nome, aluno.email, aluno.telefone]
       );
       return result.affectedRows > 0;
     } catch (error) {
       console.error('Erro ao cadastrar aluno:', error);
       throw error;
     } finally {
-      db.end();
+        db.end();
     }
   }
 
@@ -26,7 +26,7 @@ export class Aluno {
       console.error('Erro ao buscar aluno por RA:', error);
       throw error;
     } finally {
-      db.end();
+        db.end();
     }
   }
 }

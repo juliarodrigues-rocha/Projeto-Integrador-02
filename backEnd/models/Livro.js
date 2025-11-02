@@ -8,6 +8,4 @@ class Livro {
     this.editora = editora;
   }
 }
-module.exports = Livro;
-
-
+export default Livro;
