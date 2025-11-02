@@ -1,5 +1,5 @@
 import express from 'express';
-import { cadastrarLivro, getLivros } from '../controllers/bibliotecarioController.js';
+import { cadastrarLivro, getLivros } from '../controllers/livroController.js';
 
 const router = express.Router();
 

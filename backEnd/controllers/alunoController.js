@@ -1,4 +1,4 @@
-import { Aluno } from '../models/Aluno.js';
+import { Aluno } from '../repositories/alunoRepository.js';
 
 export const cadastrarAluno = async (req, res) => {
   const { ra, nome, email, telefone } = req.body;
