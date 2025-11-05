@@ -1,6 +1,7 @@
 import { openDb } from '../database/conexao.js';
 
 export class LivroRepository {
+  
   static async cadastrar(livro) {
     const db = await openDb();
     try {
