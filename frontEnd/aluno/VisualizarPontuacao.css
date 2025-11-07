@@ -1,8 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
 
-/* geral */
-.centralizar {
-  text-align: center;
+/* ======== BASE ======== */
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #f8f9fd;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 header {
@@ -23,118 +29,141 @@ hr {
   margin-top: 10px;
 }
 
-body {
-  font-family: Arial, sans-serif;
-  background-color: white;
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
-
 footer {
   background-color: #213682;
   color: white;
   text-align: center;
   padding: 15px;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+  margin-top: auto;
 }
 
-/* ======== CONTEÚDO CENTRAL ======== */
-.centralizarAzul {
-  background-color: #213682;
-  width: 60%;
-  max-width: 700px;
-  margin: 60px auto 100px;
-  padding: 50px 60px;
-  border-radius: 18px;
-  color: #ffffff;
+/* ======== CONTAINER ======== */
+.container {
+  background: white;
+  width: 90%;
+  max-width: 600px;
+  margin: 50px auto 80px;
+  padding: 35px 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  color: #1e2c6b;
 }
 
-
-.centralizarAzul h1 {
+h1 {
   text-align: center;
-  color: #ffffff;
-  margin-bottom: 35px;
-  font-size: 30px;
-  letter-spacing: 0.8px;
+  margin-bottom: 30px;
+  font-weight: 700;
+  color: #213682;
+  font-size: 26px;
 }
 
-/* ======== FORMULÁRIO ======== */
+/* ======== FORM ======== */
 form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 18px;
 }
 
 label {
-  color: #f4f4f4;
-  margin-bottom: 0 px;
-  display: block;
-  letter-spacing: 0.8px;
-  font-size: 22px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1e2c6b;
+  margin-bottom: 6px;
+}
+
+.input-ra {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ra-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 input {
   padding: 10px 12px;
   border-radius: 8px;
-  border: none;
-  background-color: #f2f4fa;
-  font-size: 18px;
-  width: 100%;
+  border: 1.5px solid #ccd2ec;
+  background-color: #f9faff;
+  font-size: 15px;
+  flex: 1;
 }
 
 input:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(30, 44, 107, 0.2);
+  border-color: #213682;
+  box-shadow: 0 0 0 2px rgba(33, 54, 130, 0.2);
 }
 
-/* ======== RA + BOTÃO IR ======== */
-#ra {
-  width: 65%;
-  display: inline-block;
-  margin-right: 10px;
-}
-
-form label[for="ra"] {
-  display: block;
-  margin-bottom: 6px;
-}
-
-button#buscar {
-  background-color: #8d1515;
+/* ======== BOTÃO IR ======== */
+#buscar {
+  background-color: #213682;
   color: white;
   border: none;
   border-radius: 8px;
-  padding: 12px 28px;
-  font-size: 20px;
-  font-weight: 500;
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
+  transition: 0.3s;
 }
 
-button#buscar:hover {
-  background-color: #b72020;
+#buscar:hover {
+  background-color: #3049a1;
 }
 
 /* ======== CAMPOS BLOQUEADOS ======== */
 #Livroslidos,
 #classif {
-  background-color: #eaeaea;
-  color: #555;
-  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  color: #777;
+  border: 1px solid #ddd;
   cursor: not-allowed;
 }
 
-/* ======== TÍTULOS SECUNDÁRIOS ======== */
-h3 {
-  margin-top: 35px;
-  color: #ffffff;
+/* ======== SEÇÃO CLASSIFICAÇÃO ======== */
+.classificacao-info {
+  background-color: #f3f5ff;
+  border-left: 4px solid #213682;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-top: 10px;
+}
+
+.classificacao-info h4 {
+  margin: 0 0 10px;
+  color: #213682;
+  font-size: 16px;
   font-weight: 600;
-  border-bottom: 2px solid #f4f4f4;
-  padding-bottom: 8px;
-  font-size: 20px;
+  text-align: left;
+}
+
+.classificacao-info ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.classificacao-info li {
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #333;
+}
+
+.classificacao-info li strong {
+  color: #1e2c6b;
+}
+
+/* ======== SEÇÃO LIVROS ======== */
+h3 {
+  margin-top: 30px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 2px solid #213682;
+  padding-bottom: 6px;
 }
 
 /* ======== TABELA ======== */
@@ -143,52 +172,50 @@ table {
   border-collapse: collapse;
   background-color: #ffffff;
   color: #333;
-  margin-top: 20px;
+  margin-top: 10px;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 th {
-  background-color: #e8ebf7;
+  background-color: #e9ecf7;
   color: #1e2c6b;
   text-align: center;
-  padding: 12px;
+  padding: 10px;
   font-weight: 600;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+  font-size: 17px;
 }
 
 td {
-  padding: 14px;
+  padding: 10px;
   text-align: center;
-  border-top: 1px solid #ddd;
-  font-size: 14px;
+  border-top: 1px solid #e2e2e2;
+  font-size: 17px;
 }
 
 tr:hover {
-  background-color: #e1dada;
+  background-color: #f1f4ff;
   transition: background-color 0.2s ease;
 }
 
-/* ======== BOTÕES GERAIS ======== */
+/* ======== BOTÃO VOLTAR ======== */
 .vermelho {
   display: inline-block;
   background-color: #8d1515;
   color: white;
   border: none;
   cursor: pointer;
-  padding: 12px 28px;
+  padding: 10px 24px;
   border-radius: 8px;
-  font-size: 20px;
+  font-size: 16px;
   text-decoration: none;
-  margin-top: 35px;
+  margin-top: 30px;
   font-weight: 500;
+  transition: 0.3s;
 }
 
 .vermelho:hover {
   background-color: #b32020;
 }
-
-
-
-
