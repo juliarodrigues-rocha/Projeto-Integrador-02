@@ -25,7 +25,7 @@ hr {
   color: white;
   width: 30%; 
   max-width: 600px;
-  margin: 86px auto; /*move o */
+  margin: 88px auto; /*move o */
   padding: 30px 15px; 
   text-align: center; 
   border-radius: 10px; 
@@ -69,7 +69,7 @@ hr {
   color: white; 
   text-align: center; 
   padding: 0; 
-  font-size: 15px; 
+  font-size: 17px; 
   position: fixed; 
   bottom: 0; 
   width: 100%; 
