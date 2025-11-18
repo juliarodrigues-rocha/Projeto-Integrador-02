@@ -22,7 +22,7 @@ hr {
 .azul { 
   background-color: #213682; 
   color: white; 
-  margin: 90px auto 100px; /* top, sides, bottom */
+  margin: 40px auto 100px; /* formulário azul pra cima ou pra baixo */
   width: 30%; 
   max-width: 600px;
   padding: 40px 20px; 
@@ -122,4 +122,55 @@ a:hover {
 
 .input {
   border-radius: 6px;
+}
+
+/* Estilos para mensagens de sucesso e erro */
+#mensagem {
+  margin: 0;
+  padding: 0;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  display: none;
+  max-width: 90%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+#mensagem:not(:empty) {
+  display: inline-block;
+  margin: 20px auto 15px;
+  padding: 15px 20px;
+}
+
+#mensagem.success {
+  background-color: #4caf50;
+  color: white;
+  border: 2px solid #45a049;
+}
+
+#mensagem.error {
+  background-color: #f44336;
+  color: white;
+  border: 2px solid #da190b;
+}
+
+/* Estilos para data e hora */
+#dataRetirada {
+  margin: 0;
+  padding: 0;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  color: white;
+  display: none;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#dataRetirada:not(:empty) {
+  display: inline-block;
+  margin: 10px auto;
+  padding: 12px 20px;
 }
