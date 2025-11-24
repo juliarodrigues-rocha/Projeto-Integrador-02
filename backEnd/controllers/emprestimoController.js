@@ -113,6 +113,18 @@ export async function getEmprestimos(req, res) {
   }
 }
 
+// Buscar todos os empréstimos ativos
+export async function getEmprestimosAtivos(req, res) {
+  try {
+    const emprestimos = await EmprestimoRepository.buscarAtivos();
+    return res.status(200).json(emprestimos);
+  } catch (error) {
+    console.error('Erro no controller (getEmprestimosAtivos):', error);
+    const erro = new Comunicado('Erro', 'Erro ao buscar empréstimos ativos.');
+    return res.status(500).json(erro);
+  }
+}
+
 // Buscar empréstimos ativos de um aluno
 export async function getEmprestimosAtivosPorAluno(req, res) {
   const { ra } = req.params;

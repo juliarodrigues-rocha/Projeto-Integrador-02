@@ -103,24 +103,40 @@ export class EmprestimoRepository {
   }
 
   static async buscarTodos() {
-    const db = await openDb();
-    try {
-      const [rows] = await db.execute('SELECT * FROM EMPRESTIMOS');
-      return rows;
-    } catch (error) {
-      throw error;
-    } finally {
-      await db.end();
-    }
+    return this.buscarDetalhado();
+  }
+
+  static async buscarAtivos() {
+    return this.buscarDetalhado('WHERE e.DATA_DEVOLUCAO IS NULL');
   }
 
   static async buscarAtivosPorAluno(raAluno) {
+    return this.buscarDetalhado('WHERE e.DATA_DEVOLUCAO IS NULL AND e.RA_ALUNO = ?', [raAluno]);
+  }
+
+  static async buscarDetalhado(whereClause = '', params = []) {
     const db = await openDb();
     try {
       const [rows] = await db.execute(
-        `SELECT * FROM EMPRESTIMOS
-         WHERE RA_ALUNO = ? AND DATA_DEVOLUCAO IS NULL`,
-        [raAluno]
+        `
+        SELECT
+          e.CODIGO AS codigoEmprestimo,
+          e.RA_ALUNO AS raAluno,
+          a.NOME AS nomeAluno,
+          e.CODIGO_LIVRO AS codigoLivro,
+          l.TITULO AS tituloLivro,
+          l.AUTOR AS autorLivro,
+          e.DATA_EMPRESTIMO AS dataEmprestimo,
+          e.HORA_EMPRESTIMO AS horaEmprestimo,
+          e.DATA_DEVOLUCAO AS dataDevolucao,
+          e.HORA_DEVOLUCAO AS horaDevolucao
+        FROM EMPRESTIMOS e
+        JOIN ALUNOS a ON a.RA = e.RA_ALUNO
+        JOIN LIVROS l ON l.CODIGO = e.CODIGO_LIVRO
+        ${whereClause}
+        ORDER BY e.DATA_EMPRESTIMO DESC, e.HORA_EMPRESTIMO DESC
+        `,
+        params
       );
       return rows;
     } catch (error) {

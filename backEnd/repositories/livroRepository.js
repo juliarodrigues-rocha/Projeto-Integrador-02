@@ -43,4 +43,45 @@ export class LivroRepository {
       await db.end();
     }
   }
+
+  static async atualizar(codigo, dadosAtualizados) {
+    const db = await openDb();
+    const {
+      titulo,
+      autor,
+      quantidade,
+      categoria,
+      editora
+    } = dadosAtualizados;
+
+    const novoStatus = quantidade > 0 ? 'Disponível' : 'Emprestado';
+
+    try {
+      const [result] = await db.execute(
+        `UPDATE LIVROS
+         SET TITULO = ?, AUTOR = ?, QTD = ?, CATEGORIA = ?, EDITORA = ?, STATUS = ?
+         WHERE CODIGO = ?`,
+        [titulo, autor, quantidade, categoria, editora, novoStatus, codigo]
+      );
+      return result.affectedRows > 0;
+    } catch (error) {
+      console.error('Erro ao atualizar livro:', error);
+      throw error;
+    } finally {
+      await db.end();
+    }
+  }
+
+  static async deletar(codigo) {
+    const db = await openDb();
+    try {
+      const [result] = await db.execute('DELETE FROM LIVROS WHERE CODIGO = ?', [codigo]);
+      return result.affectedRows > 0;
+    } catch (error) {
+      console.error('Erro ao deletar livro:', error);
+      throw error;
+    } finally {
+      await db.end();
+    }
+  }
 }
