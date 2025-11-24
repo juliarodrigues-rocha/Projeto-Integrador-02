@@ -6,6 +6,7 @@
   <title>Consulta de Livros</title>
   <link rel="stylesheet" href="ConsultarLivro.css" />
 </head>
+
 <body>
   <header>
       <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Logo_PUC-Campinas.svg/750px-Logo_PUC-Campinas.svg.png" alt="Logo da PUC-Campinas" />
@@ -15,9 +16,10 @@
   <main>
     <section class="consulta-container">
       <h2>Consultar Livro</h2>
-      <form>
+
+      <form id="formBusca">
         <div class="input-group">
-          <input type="text" id="buscarLivro" name="buscarLivro" placeholder="Digite o código ou nome do livro..." />
+          <input type="text" id="buscarLivro" placeholder="Digite o código ou título..." />
           <button type="submit">Buscar</button>
         </div>
       </form>
@@ -31,21 +33,10 @@
             <th>Status</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>001</td>
-            <td>Introdução à Programação</td>
-            <td>3</td>
-            <td class="disponivel">Disponível</td>
-          </tr>
-          <tr>
-            <td>002</td>
-            <td>Banco de Dados Avançado</td>
-            <td>1</td>
-            <td class="emprestado">Emprestado</td>
-          </tr>
-        </tbody>
+        <tbody id="tabelaLivros"></tbody>
       </table>
+
+      <p id="mensagem" class="mensagem"></p>
 
       <div class="actions">
         <a href="Index.html" class="btn voltar">Voltar</a>
@@ -57,5 +48,9 @@
   <footer>
     © 2025 PUC-Campinas. Todos os direitos reservados.
   </footer>
+
+  
+  
+  <script src="ConsultarLivro.js"></script>
 </body>
 </html>

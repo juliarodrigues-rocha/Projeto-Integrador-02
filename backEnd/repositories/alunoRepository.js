@@ -5,7 +5,7 @@ export class AlunoRepository {
     const db = await openDb();
     try {
       const [result] = await db.execute(
-        'INSERT INTO ALUNO (RA, NOME, EMAIL, TELEFONE) VALUES (?, ?, ?, ?)',
+        'INSERT INTO ALUNOS (RA, NOME, EMAIL, TELEFONE) VALUES (?, ?, ?, ?)',
         [aluno.ra, aluno.nome, aluno.email, aluno.telefone]
       );
       return result.affectedRows > 0;
@@ -13,20 +13,20 @@ export class AlunoRepository {
       console.error('Erro ao cadastrar aluno:', error);
       throw error;
     } finally {
-        db.end();
+      await db.end();
     }
   }
 
-    static async buscarPorRA(ra) {
+  static async buscarPorRA(ra) {
     const db = await openDb();
     try {
-      const [rows] = await db.execute('SELECT * FROM ALUNO WHERE RA = ?', [ra]);
+      const [rows] = await db.execute('SELECT * FROM ALUNOS WHERE RA = ?', [ra]);
       return rows[0];
     } catch (error) {
       console.error('Erro ao buscar aluno por RA:', error);
       throw error;
     } finally {
-        db.end();
+      await db.end();
     }
   }
 }

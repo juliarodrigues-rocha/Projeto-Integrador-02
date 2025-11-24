@@ -47,7 +47,7 @@ export class EmprestimoRepository {
     } catch (error) {
       throw error;
     } finally {
-      db.end();
+      await db.end();
     }
   }
 
@@ -98,7 +98,35 @@ export class EmprestimoRepository {
     } catch (error) {
       throw error;
     } finally {
-      db.end();
+      await db.end();
+    }
+  }
+
+  static async buscarTodos() {
+    const db = await openDb();
+    try {
+      const [rows] = await db.execute('SELECT * FROM EMPRESTIMOS');
+      return rows;
+    } catch (error) {
+      throw error;
+    } finally {
+      await db.end();
+    }
+  }
+
+  static async buscarAtivosPorAluno(raAluno) {
+    const db = await openDb();
+    try {
+      const [rows] = await db.execute(
+        `SELECT * FROM EMPRESTIMOS
+         WHERE RA_ALUNO = ? AND DATA_DEVOLUCAO IS NULL`,
+        [raAluno]
+      );
+      return rows;
+    } catch (error) {
+      throw error;
+    } finally {
+      await db.end();
     }
   }
 }
