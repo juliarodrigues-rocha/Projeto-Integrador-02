@@ -1,6 +1,7 @@
 import { AlunoRepository } from '../repositories/alunoRepository.js';
 import Aluno from '../models/Aluno.js';
 import Comunicado from '../models/Comunicado.js';
+import { openDb } from "../database/conexao.js";
 
 export const cadastrarAluno = async (req, res) => {
   const { ra, nome, email, telefone } = req.body;
@@ -44,5 +45,69 @@ export const cadastrarAluno = async (req, res) => {
     console.error('Stack trace:', error.stack);
     const mensagemErro = error.message || 'Erro interno do servidor.';
     res.status(500).json(new Comunicado('Erro interno do servidor', mensagemErro));
+  }
+};
+
+
+
+export const VisualizarPontuacao = async (req, res) => {
+  const { ra } = req.params;
+
+  try {
+    // 1) Validação do RA
+    if (!ra) return res.status(400).json({ erro: true, mensagem: "O RA deve ser informado." });
+    if (!/^[0-9]+$/.test(ra)) return res.status(400).json({ erro: true, mensagem: "O RA deve conter apenas números." });
+    if (ra.length < 8) return res.status(400).json({ erro: true, mensagem: "O RA deve conter no mínimo 8 dígitos." });
+    if (ra.length > 9) return res.status(400).json({ erro: true, mensagem: "O RA deve conter no máximo 9 dígitos." });
+
+    // 2) Verificar se aluno existe
+    const aluno = await AlunoRepository.buscarPorRA(ra);
+    if (!aluno) return res.status(404).json({ erro: true, mensagem: "Aluno não encontrado." });
+
+    // 3) Buscar livros lidos últimos 6 meses (DATA + HORA)
+    const db = await openDb();
+
+    const [linhas] = await db.execute(
+      `SELECT 
+          l.CODIGO AS codigo,
+          l.TITULO AS titulo,
+
+          -- junta DATA + HORA da devolução
+          CONCAT(
+            DATE_FORMAT(e.DATA_DEVOLUCAO, '%Y-%m-%d'),
+            ' ',
+            DATE_FORMAT(e.HORA_DEVOLUCAO, '%H:%i:%s')
+          ) AS datahora
+
+       FROM EMPRESTIMOS e
+       JOIN LIVROS l ON l.CODIGO = e.CODIGO_LIVRO
+       WHERE e.RA_ALUNO = ?
+         AND e.DATA_DEVOLUCAO IS NOT NULL
+         AND e.DATA_DEVOLUCAO >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       ORDER BY e.DATA_DEVOLUCAO DESC`,
+      [ra]
+    );
+
+    await db.end();
+
+    // 4) Calcular classificação
+    const totalLivros = linhas.length;
+    let classificacao =
+      totalLivros <= 5 ? "Leitor Iniciante" :
+      totalLivros <= 10 ? "Leitor Regular" :
+      totalLivros <= 20 ? "Leitor Ativo" :
+      "Leitor Extremo";
+
+    // 5) Retornar
+    return res.status(200).json({
+      erro: false,
+      ra,
+      totalLivros,
+      classificacao,
+      livros: linhas
+    });
+
+  } catch (error) {
+    return res.status(500).json({ erro: true, mensagem: "Erro interno ao consultar pontuação." });
   }
 };

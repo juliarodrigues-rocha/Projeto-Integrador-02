@@ -8,6 +8,14 @@
 </head>
 
 <body>
+  <!-- CAIXA DE MENSAGEM BONITINHA -->
+  <div id="msgBox" class="msg-box hidden">
+    <div class="msg-content">
+      <span id="msgText"></span>
+      <button id="msgClose">OK</button>
+    </div>
+  </div>
+
   <header>
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Logo_PUC-Campinas.svg/750px-Logo_PUC-Campinas.svg.png" alt="Logo da Puc">
     <hr>
@@ -35,16 +43,6 @@
         <input type="text" id="classif" name="classif">
       </div>
 
-      <div class="classificacao-info">
-        <h4>Classificações de Leitura</h4>
-        <ul>
-          <li><strong>Leitor Iniciante:</strong> Até 5 livros lidos</li>
-          <li><strong>Leitor Regular:</strong> 6 a 10 livros</li>
-          <li><strong>Leitor Ativo:</strong> 11 a 20 livros</li>
-          <li><strong>Leitor Extremo:</strong> mais de 20 livros</li>
-        </ul>
-      </div>
-
       <h3>Livros lidos</h3>
     </form>
 
@@ -54,13 +52,9 @@
           <th>Código</th>
           <th>Título</th>
           <th>Data</th>
-          <th>Hora</th>
         </tr>
       </thead>
-      <tbody>
-        <tr><td></td><td></td><td></td><td></td></tr>
-        <tr><td></td><td></td><td></td><td></td></tr>
-      </tbody>
+      <tbody></tbody>
     </table>
 
     <a class="vermelho" href="Index.html">Voltar</a>
@@ -69,5 +63,7 @@
   <footer>
     © 2025 PUC-Campinas. Todos os direitos reservados.
   </footer>
+
+  <script src="VisualizarPontuacao.js"></script>
 </body>
 </html>
