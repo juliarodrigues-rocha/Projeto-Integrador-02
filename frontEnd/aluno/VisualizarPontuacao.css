@@ -129,12 +129,13 @@ input:focus {
   background-color: #f3f5ff;
   border-left: 4px solid #213682;
   border-radius: 8px;
-  padding: 14px 16px;
-  margin-top: 10px;
+  padding: 16px 18px;
+  margin-top: 15px;
+  margin-bottom: 5px;
 }
 
 .classificacao-info h4 {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
   color: #213682;
   font-size: 16px;
   font-weight: 600;
@@ -148,13 +149,19 @@ input:focus {
 }
 
 .classificacao-info li {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-size: 14px;
   color: #333;
+  line-height: 1.5;
+}
+
+.classificacao-info li:last-child {
+  margin-bottom: 0;
 }
 
 .classificacao-info li strong {
   color: #1e2c6b;
+  font-weight: 600;
 }
 
 /* ======== SEÇÃO LIVROS ======== */

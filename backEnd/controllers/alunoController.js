@@ -48,8 +48,9 @@ export const cadastrarAluno = async (req, res) => {
   }
 };
 
-
-
+/**
+ * Consulta a pontuação de um aluno específico (últimos 6 meses)
+ */
 export const VisualizarPontuacao = async (req, res) => {
   const { ra } = req.params;
 
@@ -71,14 +72,11 @@ export const VisualizarPontuacao = async (req, res) => {
       `SELECT 
           l.CODIGO AS codigo,
           l.TITULO AS titulo,
-
-          -- junta DATA + HORA da devolução
           CONCAT(
             DATE_FORMAT(e.DATA_DEVOLUCAO, '%Y-%m-%d'),
             ' ',
             DATE_FORMAT(e.HORA_DEVOLUCAO, '%H:%i:%s')
           ) AS datahora
-
        FROM EMPRESTIMOS e
        JOIN LIVROS l ON l.CODIGO = e.CODIGO_LIVRO
        WHERE e.RA_ALUNO = ?
@@ -92,7 +90,7 @@ export const VisualizarPontuacao = async (req, res) => {
 
     // 4) Calcular classificação
     const totalLivros = linhas.length;
-    let classificacao =
+    const classificacao =
       totalLivros <= 5 ? "Leitor Iniciante" :
       totalLivros <= 10 ? "Leitor Regular" :
       totalLivros <= 20 ? "Leitor Ativo" :
@@ -109,5 +107,89 @@ export const VisualizarPontuacao = async (req, res) => {
 
   } catch (error) {
     return res.status(500).json({ erro: true, mensagem: "Erro interno ao consultar pontuação." });
+  }
+};
+
+/**
+ * Classificação geral de todos os alunos no último semestre (6 meses)
+ * Retorna o total de livros lidos, classificação e resumo por nível.
+ */
+export const ClassificacaoGeral = async (_req, res) => {
+  try {
+    const db = await openDb();
+
+    const [linhas] = await db.execute(
+      `SELECT 
+         a.RA   AS ra,
+         a.NOME AS nome,
+         SUM(
+           CASE 
+             WHEN e.DATA_DEVOLUCAO IS NOT NULL
+              AND e.DATA_DEVOLUCAO >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+             THEN 1 
+             ELSE 0 
+           END
+         ) AS totalLivros
+       FROM ALUNOS a
+       LEFT JOIN EMPRESTIMOS e ON e.RA_ALUNO = a.RA
+       GROUP BY a.RA, a.NOME
+       ORDER BY totalLivros DESC, a.NOME ASC`
+    );
+
+    await db.end();
+
+    // Monta ranking com mesma lógica de classificação do VisualizarPontuacao
+    const ranking = linhas.map((linha) => {
+      const total = Number(linha.totalLivros) || 0;
+      const classificacao =
+        total <= 5 ? "Leitor Iniciante" :
+        total <= 10 ? "Leitor Regular" :
+        total <= 20 ? "Leitor Ativo" :
+        "Leitor Extremo";
+
+      return {
+        ra: linha.ra,
+        nome: linha.nome,
+        totalLivros: total,
+        classificacao,
+      };
+    });
+
+    // Resumo por nível para os cards da tela
+    const resumo = {
+      iniciantes: 0,
+      regulares: 0,
+      ativos: 0,
+      extremos: 0,
+    };
+
+    for (const aluno of ranking) {
+      switch (aluno.classificacao) {
+        case "Leitor Iniciante":
+          resumo.iniciantes += 1;
+          break;
+        case "Leitor Regular":
+          resumo.regulares += 1;
+          break;
+        case "Leitor Ativo":
+          resumo.ativos += 1;
+          break;
+        case "Leitor Extremo":
+          resumo.extremos += 1;
+          break;
+        default:
+          break;
+      }
+    }
+
+    return res.status(200).json({
+      erro: false,
+      totalAlunos: ranking.length,
+      resumo,
+      ranking,
+    });
+  } catch (error) {
+    console.error('Erro ao consultar classificação geral dos alunos:', error);
+    return res.status(500).json({ erro: true, mensagem: "Erro interno ao consultar classificação geral." });
   }
 };
