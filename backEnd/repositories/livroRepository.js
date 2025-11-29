@@ -75,9 +75,34 @@ export class LivroRepository {
   static async deletar(codigo) {
     const db = await openDb();
     try {
-      const [result] = await db.execute('DELETE FROM LIVROS WHERE CODIGO = ?', [codigo]);
+      // Inicia uma transação
+      await db.beginTransaction();
+      
+      // Desabilita temporariamente as verificações de foreign key
+      await db.execute('SET FOREIGN_KEY_CHECKS = 0');
+      
+      // Primeiro, deleta os empréstimos relacionados ao livro
+      await db.execute('DELETE FROM EMPRESTIMOS WHERE CODIGO_LIVRO = ?', [String(codigo)]);
+      
+      // Depois, deleta o livro
+      const [result] = await db.execute('DELETE FROM LIVROS WHERE CODIGO = ?', [String(codigo)]);
+      
+      // Reabilita as verificações de foreign key
+      await db.execute('SET FOREIGN_KEY_CHECKS = 1');
+      
+      // Confirma a transação
+      await db.commit();
+      
       return result.affectedRows > 0;
     } catch (error) {
+      // Reabilita as verificações de foreign key em caso de erro
+      try {
+        await db.execute('SET FOREIGN_KEY_CHECKS = 1');
+      } catch (e) {
+        // Ignora erro ao reabilitar
+      }
+      // Reverte a transação em caso de erro
+      await db.rollback();
       console.error('Erro ao deletar livro:', error);
       throw error;
     } finally {

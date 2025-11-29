@@ -266,7 +266,8 @@ async function deletarLivro(livro) {
   if (!confirmar) return;
 
   try {
-    const resposta = await fetch(`${API_BASE}/api/livros/${livro.CODIGO}`, {
+    const codigo = String(livro.CODIGO);
+    const resposta = await fetch(`${API_BASE}/api/livros/${codigo}`, {
       method: "DELETE"
     });
 
@@ -279,6 +280,7 @@ async function deletarLivro(livro) {
     alert(resultado.mensagem || "Livro excluído com sucesso!");
     carregarGerenciamento();
   } catch (error) {
+    console.error("Erro ao deletar livro:", error);
     alert("Erro ao conectar ao servidor.");
   }
 }
