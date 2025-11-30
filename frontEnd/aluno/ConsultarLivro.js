@@ -9,16 +9,16 @@ async function realizarBusca(busca) {
   tbody.innerHTML = "";
   mensagem.textContent = "";
 
-  // Se o campo estiver vazio, não faz nada
-  if (busca === "") {
-    return;
-  }
-
   let livros = [];
 
   try {
+    // Se o campo estiver vazio, busca todos os livros
+    if (busca === "") {
+      const response = await fetch("http://localhost:3000/api/livros");
+      livros = await response.json();
+    }
     // Se for código numérico
-    if (!isNaN(busca) && busca.trim() !== "") {
+    else if (!isNaN(busca) && busca.trim() !== "") {
       const response = await fetch(`http://localhost:3000/api/livros/${busca}`);
         
       if (response.ok) {
@@ -84,4 +84,9 @@ document.querySelector("form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const busca = campoBusca.value.trim();
   realizarBusca(busca);
+});
+
+// Carrega todos os livros quando a página é aberta
+document.addEventListener("DOMContentLoaded", () => {
+  realizarBusca("");
 });
