@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function validarRA(ra) {
-    return /^[0-9]{5,8}$/.test(ra);
+    return /^[0-9]{8}$/.test(ra);
   }
 
   function validarNome(nome) {
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (!validarRA(ra))
-      return mostrarMensagem("RA inválido. Deve conter apenas números, mínimo 5 e máximo 8 caracteres.", "red");
+      return mostrarMensagem("RA inválido. Deve conter 8 números.", "red");
     if (!validarNome(nome))
       return mostrarMensagem("Nome inválido. Deve conter apenas letras.", "red");
     if (!validarEmail(email))

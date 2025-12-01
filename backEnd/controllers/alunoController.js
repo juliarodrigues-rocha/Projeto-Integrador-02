@@ -13,8 +13,8 @@ export const cadastrarAluno = async (req, res) => {
   }
 
   // Validação de formato para RA (apenas números, mínimo 5 e máximo 8 dígitos)
-  if (!/^[0-9]{5,8}$/.test(ra)) {
-    return res.status(400).json(new Comunicado('RA inválido', 'RA inválido. Deve conter apenas números, mínimo 5 e máximo 8 caracteres.'));
+  if (!/^[0-9]{8}$/.test(ra)) {
+    return res.status(400).json(new Comunicado('RA inválido', 'RA inválido. Deve conter exatamente 8 números.'));
   }
 
   // Validação de formato para Nome (apenas letras e espaços, mínimo 3 letras)
@@ -57,9 +57,10 @@ export const VisualizarPontuacao = async (req, res) => {
   try {
     // 1) Validação do RA
     if (!ra) return res.status(400).json({ erro: true, mensagem: "O RA deve ser informado." });
-    if (!/^[0-9]+$/.test(ra)) return res.status(400).json({ erro: true, mensagem: "O RA deve conter apenas números." });
-    if (ra.length < 8) return res.status(400).json({ erro: true, mensagem: "O RA deve conter no mínimo 8 dígitos." });
-    if (ra.length > 9) return res.status(400).json({ erro: true, mensagem: "O RA deve conter no máximo 9 dígitos." });
+    if (!/^[0-9]{8}$/.test(ra)) {
+      return res.status(400).json({ erro: true, mensagem: "O RA deve conter exatamente 8 números." });
+    }
+
 
     // 2) Verificar se aluno existe
     const aluno = await AlunoRepository.buscarPorRA(ra);
