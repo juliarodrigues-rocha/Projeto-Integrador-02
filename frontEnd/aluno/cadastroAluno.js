@@ -1,4 +1,5 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () 
+{
   const form = document.getElementById("formCadastro");
   const msg = document.getElementById("mensagem");
 

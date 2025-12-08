@@ -48,7 +48,7 @@ footer {
 }
 
 /* ===============================
-   BOTÕES (estilo geral)
+       BOTÕES (estilo geral)
 ================================= */
 button,
 a.amarelo,
@@ -102,7 +102,7 @@ a.vermelho,
   padding: 28px 20px;
   width: 380px; /* menor e mais delicado */
   position: absolute;
-  top: 50%;             /* move para o meio da tela */
+  top: 50%; /* move para o meio da tela */
   left: 50%;
   transform: translate(-50%, -50%); /* centraliza perfeitamente */
 }
@@ -135,7 +135,6 @@ a.vermelho,
   font-size: 15px;
   box-sizing: border-box;
 }
-
 
 .botoes_cadastrar_aluno {
   display: flex;
