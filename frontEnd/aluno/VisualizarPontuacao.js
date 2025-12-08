@@ -11,9 +11,14 @@ document.getElementById("buscar").addEventListener("click", async () => {
   const ra = document.getElementById("ra").value.trim();
 
   if (!ra) return showMessage("Digite seu RA.");
-  if (!/^[0-9]+$/.test(ra)) return showMessage("RA deve conter apenas números.");
-  if (ra.length < 8) return showMessage("RA deve ter no mínimo 8 dígitos.");
-  if (ra.length > 9) return showMessage("RA deve ter no máximo 9 dígitos.");
+  if (!/^[0-9]+$/.test(ra)) {
+    return showMessage("RA deve conter apenas números.");
+  }
+
+  if (!/^\d{8}$/.test(ra)) {
+      return showMessage("RA deve ter exatamente 8 dígitos.");
+  }
+
 
   try {
     const response = await fetch(`http://localhost:3000/alunos/pontuacao/${ra}`);
