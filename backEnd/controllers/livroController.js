@@ -1,4 +1,5 @@
 import { LivroRepository } from '../repositories/livroRepository.js';
+import { EmprestimoRepository } from '../repositories/emprestimoRepository.js';
 import Livro from '../models/Livro.js';
 import Comunicado from '../models/Comunicado.js';
 
@@ -23,8 +24,9 @@ function validarCamposLivro({ codigo, titulo, autor, quantidade, categoria, edit
     return new Comunicado('Quantidade inválida', 'A quantidade deve ser um número >= 0.');
   }
 
-  if (!soLetras.test(titulo)) {
-    return new Comunicado('Título inválido', 'O título deve conter apenas letras e espaços.');
+  // Título pode conter letras, números e espaços
+  if (!/^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s]+$/.test(titulo)) {
+    return new Comunicado('Título inválido', 'O título deve conter apenas letras, números e espaços.');
   }
 
   if (!soLetras.test(autor)) {
@@ -153,6 +155,12 @@ export const deletarLivro = async (req, res) => {
 
     if (!livroExistente) {
       return res.status(404).json(new Comunicado('Livro não encontrado', 'Registro inexistente.'));
+    }
+
+    // Verifica se há empréstimos ativos para este livro
+    const emprestimosAtivos = await EmprestimoRepository.buscarAtivosPorLivro(codigo);
+    if (emprestimosAtivos && emprestimosAtivos.length > 0) {
+      return res.status(400).json(new Comunicado('Não é possível excluir', 'Este livro possui empréstimos ativos e não pode ser excluído.'));
     }
 
     await LivroRepository.deletar(codigo);

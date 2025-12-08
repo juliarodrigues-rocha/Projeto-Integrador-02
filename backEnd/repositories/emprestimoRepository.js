@@ -114,6 +114,10 @@ export class EmprestimoRepository {
     return this.buscarDetalhado('WHERE e.DATA_DEVOLUCAO IS NULL AND e.RA_ALUNO = ?', [raAluno]);
   }
 
+  static async buscarAtivosPorLivro(codigoLivro) {
+    return this.buscarDetalhado('WHERE e.DATA_DEVOLUCAO IS NULL AND e.CODIGO_LIVRO = ?', [codigoLivro]);
+  }
+
   static async buscarDetalhado(whereClause = '', params = []) {
     const db = await openDb();
     try {
