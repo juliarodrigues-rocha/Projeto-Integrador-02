@@ -78,22 +78,41 @@ export const VisualizarPontuacao = async (req, res) => {
     const aluno = await AlunoRepository.buscarPorRA(ra);
     if (!aluno) return res.status(404).json({ erro: true, mensagem: "Aluno não encontrado." });
 
-    // BUSCA VIA REPOSITORY
-    const livros = await AlunoRepository.buscarLivrosUltimos6Meses(ra);
+   const [linhas] = await db.execute(
+      `SELECT 
+          l.CODIGO AS codigo,
+          l.TITULO AS titulo,
+          CONCAT(
+            DATE_FORMAT(e.DATA_DEVOLUCAO, '%Y-%m-%d'),
+            ' ',
+            DATE_FORMAT(e.HORA_DEVOLUCAO, '%H:%i:%s')
+          ) AS datahora
+       FROM EMPRESTIMOS e
+       JOIN LIVROS l ON l.CODIGO = e.CODIGO_LIVRO
+       WHERE e.RA_ALUNO = ?
+         AND e.DATA_DEVOLUCAO IS NOT NULL
+         AND e.DATA_DEVOLUCAO >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+       ORDER BY e.DATA_DEVOLUCAO DESC`,
+      [ra]
+    );
 
-    const totalLivros = livros.length;
+    await db.end();
+
+    // 4) Calcular classificação
+    const totalLivros = linhas.length;
     const classificacao =
       totalLivros <= 5 ? "Leitor Iniciante" :
       totalLivros <= 10 ? "Leitor Regular" :
       totalLivros <= 20 ? "Leitor Ativo" :
       "Leitor Extremo";
 
+    // 5) Retornar
     return res.status(200).json({
       erro: false,
       ra,
       totalLivros,
       classificacao,
-      livros
+      livros: linhas
     });
 
   } catch (error) {
@@ -106,9 +125,29 @@ export const VisualizarPontuacao = async (req, res) => {
 /* CLASSIFICAÇÃO GERAL -> Trabalha com entidade ALUNO, por isso está aqui, back organizado em entidade de negócio m */
 export const ClassificacaoGeral = async (_req, res) => {
   try {
-    // busca no repository
-    const linhas = await AlunoRepository.buscarClassificacaoGeral();
+    const db = await openDb();
 
+    const [linhas] = await db.execute(
+      `SELECT 
+         a.RA   AS ra,
+         a.NOME AS nome,
+         SUM(
+           CASE 
+             WHEN e.DATA_DEVOLUCAO IS NOT NULL
+              AND e.DATA_DEVOLUCAO >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+             THEN 1 
+             ELSE 0 
+           END
+         ) AS totalLivros
+       FROM ALUNOS a
+       LEFT JOIN EMPRESTIMOS e ON e.RA_ALUNO = a.RA
+       GROUP BY a.RA, a.NOME
+       ORDER BY totalLivros DESC, a.NOME ASC`
+    );
+
+    await db.end();
+
+    // Monta ranking com mesma lógica de classificação do VisualizarPontuacao
     const ranking = linhas.map((linha) => {
       const total = Number(linha.totalLivros) || 0;
       const classificacao =
@@ -125,6 +164,7 @@ export const ClassificacaoGeral = async (_req, res) => {
       };
     });
 
+    // Resumo por nível para os cards da tela
     const resumo = {
       iniciantes: 0,
       regulares: 0,
@@ -134,10 +174,20 @@ export const ClassificacaoGeral = async (_req, res) => {
 
     for (const aluno of ranking) {
       switch (aluno.classificacao) {
-        case "Leitor Iniciante": resumo.iniciantes++; break;
-        case "Leitor Regular": resumo.regulares++; break;
-        case "Leitor Ativo": resumo.ativos++; break;
-        case "Leitor Extremo": resumo.extremos++; break;
+        case "Leitor Iniciante":
+          resumo.iniciantes += 1;
+          break;
+        case "Leitor Regular":
+          resumo.regulares += 1;
+          break;
+        case "Leitor Ativo":
+          resumo.ativos += 1;
+          break;
+        case "Leitor Extremo":
+          resumo.extremos += 1;
+          break;
+        default:
+          break;
       }
     }
 
@@ -147,8 +197,9 @@ export const ClassificacaoGeral = async (_req, res) => {
       resumo,
       ranking,
     });
-
-  } catch (error) {
+  }
+   catch (error) {
+    console.error('Erro ao consultar classificação geral dos alunos:', error);
     return res.status(500).json({ erro: true, mensagem: "Erro interno ao consultar classificação geral." });
   }
 };
