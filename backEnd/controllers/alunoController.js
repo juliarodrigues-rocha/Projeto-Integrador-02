@@ -1,160 +1,145 @@
-import { AlunoRepository } from '../repositories/alunoRepository.js'; //Classe que acessa o banco de dados (camada de persistência)
-import Aluno from '../models/Aluno.js'; //Modelo/classe que representa um aluno
-import Comunicado from '../models/Comunicado.js'; //Modelo para padronizar respostas de sucesso/erro
+import { EmprestimoRepository } from '../repositories/emprestimoRepository.js';
+import Comunicado from '../models/Comunicado.js';
 
+// RETIRADA DE LIVRO (empréstimo)
+export async function registrarEmprestimo(req, res) {
 
-// LÓGICA DE NEGÓCIO 
-
-// Exporta a função para ser usada em outros arquivos (routes)
-// recebe Objeto da requisição HTTP (contém dados enviados pelo frontend)
-// recebe Objeto da resposta HTTP (usado para enviar resposta ao frontend)
-export const cadastrarAluno = async (req, res) => {
-
-  // Obtém os dados enviados pelo frontend via POST
-  const { ra, nome, email, telefone } = req.body; //Contém os dados JSON enviados pelo frontend
-
-  // Encapsula os dados em um objeto tipado  
-  const aluno = new Aluno(ra, nome, email, telefone); // Cria uma instância da classe `Aluno`(models) com os dados recebidos
-
-
-  // VALIDAÇÕES DE SEGURANÇA 
-  if (!ra || !nome || !email || !telefone) {
-    return res.status(400).json(new Comunicado('Dados incompletos', 'Todos os campos são obrigatórios.'));
+  const { ra, codigoLivro } = req.body;
+  if (!ra || !codigoLivro) {
+    const erro = new Comunicado('Erro', 'RA e código do livro são obrigatórios.');
+    return res.status(400).json(erro);
   }
 
-  // Validação de formato para RA (apenas números, mínimo 5 e máximo 8 dígitos)
-  if (!/^[0-9]{8}$/.test(ra)) {
-    return res.status(400).json(new Comunicado('RA inválido', 'RA inválido. Deve conter exatamente 8 números.'));
+  // Validação de tipos
+  if (typeof ra !== 'string' || typeof codigoLivro !== 'string') {
+    const erro = new Comunicado('Erro', 'RA e código do livro devem ser strings.');
+    return res.status(400).json(erro);
   }
 
-  // Validação de formato para Nome (apenas letras e espaços, mínimo 3 letras)
-  if (!/^[A-Za-zÀ-ÖØ-öø-ÿ\s]{3,}$/.test(nome)) {
-    return res.status(400).json(new Comunicado('Nome inválido', 'O nome digitado é inválido. O nome deve conter apenas letras.'));
+  // Normalizar dados
+  const raTrimmed = ra.trim();
+  const codigoLivroTrimmed = codigoLivro.trim();
+
+  if (raTrimmed.length === 0 || codigoLivroTrimmed.length === 0) {
+    const erro = new Comunicado('Erro', 'RA e código do livro não podem estar vazios.');
+    return res.status(400).json(erro);
   }
 
-  // Validação de formato para Email
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return res.status(400).json(new Comunicado('Email inválido', 'Email inválido.'));
-  }
-
-  // Validação de formato para Telefone (apenas números, mínimo 8 e máximo 11 dígitos)
-  if (!/^[0-9]{8,11}$/.test(telefone)) {
-    return res.status(400).json(new Comunicado('Telefone inválido', 'Telefone inválido. Deve conter apenas números, mínimo 8 e máximo 11 números.'));
-  }
-  
   try {
-    // BUSCA VIA REPOSITORY, POIS O REPOSITORY ACESSA O BD
-    const alunoExistente = await AlunoRepository.buscarPorRA(ra);
-
-    if (alunoExistente) {
-      return res.status(409).json(new Comunicado('Aluno já cadastrado', 'Aluno com este RA já cadastrado.'));
-    }
-
-    // CADASTRA VIA REPOSITORY, POIS O REPOSITORY ACESSA O BD
-    // `await`: Aguarda a resposta da consulta ao banco
-    await AlunoRepository.cadastrar(aluno);
+    const retorno = await EmprestimoRepository.registrarEmprestimo(raTrimmed, codigoLivroTrimmed);
     
-    res.status(201).json(new Comunicado('Sucesso', 'Aluno cadastrado com sucesso!'));
-  } catch (error) {
-    console.error('Erro no controller de cadastro de aluno:', error);
-    console.error('Stack trace:', error.stack);
-    const mensagemErro = error.message || 'Erro interno do servidor.';
-    res.status(500).json(new Comunicado('Erro interno do servidor', mensagemErro));
-  }
-};
-
-/* VISUALIZAR PONTUAÇÃO DO ALUNO ESPECÍFICO (últimos 6 meses) */
-export const VisualizarPontuacao = async (req, res) => {
-  const { ra } = req.params;
-  try {
-    if (!ra) return res.status(400).json({ erro: true, mensagem: "O RA deve ser informado." });
-    if (!/^[0-9]{8}$/.test(ra)) {
-      return res.status(400).json({ erro: true, mensagem: "O RA deve conter exatamente 8 números." });
-    }
+    console.log('Retorno do repository (empréstimo):', retorno);
     
-    // BUSCA VIA REPOSITORY
-    const aluno = await AlunoRepository.buscarPorRA(ra);
-    if (!aluno) return res.status(404).json({ erro: true, mensagem: "Aluno não encontrado." });
+    const sucesso = new Comunicado('Sucesso', 'Empréstimo registrado com sucesso!');
 
-    // BUSCA VIA REPOSITORY
-    const livros = await AlunoRepository.buscarLivrosUltimos6Meses(ra);
-
-    const totalLivros = livros.length;
-    const classificacao =
-      totalLivros <= 5 ? "Leitor Iniciante" :
-      totalLivros <= 10 ? "Leitor Regular" :
-      totalLivros <= 20 ? "Leitor Ativo" :
-      "Leitor Extremo";
-
-    return res.status(200).json({
-      erro: false,
-      ra,
-      totalLivros,
-      classificacao,
-      livros
-    });
-
-  } catch (error) {
-    return res.status(500).json({ erro: true, mensagem: "Erro interno ao consultar pontuação." });
-  }
-};
-
-
-
-/*
- Retorna o total de livros lidos, classificação e resumo por nível
- CLASSIFICAÇÃO GERAL -> Trabalha com entidade ALUNO, por isso está aqui, back organizado em entidade de negócio m*/
-export const ClassificacaoGeral = async (_req, res) => {
-  try {
-    // busca no repository
-    const linhas = await AlunoRepository.buscarClassificacaoGeral();
-
-    //Para cada aluno, calcula a classificação
-    //.map() -> Monta um novo array a partir do array original
-    const ranking = linhas.map((linha) => {
-      const total = Number(linha.totalLivros) || 0;
-      const classificacao =
-        total <= 5 ? "Leitor Iniciante" :
-        total <= 10 ? "Leitor Regular" :
-        total <= 20 ? "Leitor Ativo" :
-        "Leitor Extremo";
-
-      //Retorna um objeto organizado que será colocado dentro do array ranking
-      return {
-        ra: linha.ra,
-        nome: linha.nome,
-        totalLivros: total,
-        classificacao,
-      };
-    });
-
-    //Cria o resumo geral
-    const resumo = {
-      iniciantes: 0,
-      regulares: 0,
-      ativos: 0,
-      extremos: 0,
+    // FRONT RECEBER A DATA E HORA
+    const resposta = {
+      status: sucesso.status,
+      mensagem: sucesso.mensagem,
+      dataEmprestimo: retorno.dataEmprestimo,
+      horaEmprestimo: retorno.horaEmprestimo
     };
-
-    //Conta qnts alunos existem em cada categoria percorrendo o ranking
-    for (const aluno of ranking) {
-      switch (aluno.classificacao) {
-        case "Leitor Iniciante": resumo.iniciantes++; break;
-        case "Leitor Regular": resumo.regulares++; break;
-        case "Leitor Ativo": resumo.ativos++; break;
-        case "Leitor Extremo": resumo.extremos++; break;
-      }
-    }
-
-    //Retorna resposta para o front
-    return res.status(200).json({
-      erro: false,
-      totalAlunos: ranking.length,
-      resumo,
-      ranking,
-    });
+    
+    console.log('Resposta enviada ao frontend (empréstimo):', resposta);
+    
+    return res.status(201).json(resposta);
 
   } catch (error) {
-    return res.status(500).json({ erro: true, mensagem: "Erro interno ao consultar classificação geral." });
+    console.error('Erro no controller (registrarEmprestimo):', error);
+    const erro = new Comunicado('Erro', error.message || 'Erro ao registrar empréstimo.');
+    return res.status(500).json(erro);
   }
-};
+}
+
+// DEVOLUÇÃO DE LIVRO
+export async function registrarDevolucao(req, res) {
+  const { ra, codigoLivro } = req.body;
+
+  if (!ra || !codigoLivro) {
+    const erro = new Comunicado('Erro', 'RA e código do livro são obrigatórios.');
+    return res.status(400).json(erro);
+  }
+
+  // Validação de tipos
+  if (typeof ra !== 'string' || typeof codigoLivro !== 'string') {
+    const erro = new Comunicado('Erro', 'RA e código do livro devem ser strings.');
+    return res.status(400).json(erro);
+  }
+
+  // Normalizar dados
+  const raTrimmed = ra.trim();
+  const codigoLivroTrimmed = codigoLivro.trim();
+
+  if (raTrimmed.length === 0 || codigoLivroTrimmed.length === 0) {
+    const erro = new Comunicado('Erro', 'RA e código do livro não podem estar vazios.');
+    return res.status(400).json(erro);
+  }
+
+  try {
+    const retorno = await EmprestimoRepository.registrarDevolucao(raTrimmed, codigoLivroTrimmed);
+    
+    console.log('Retorno do repository (devolução):', retorno);
+    
+    const sucesso = new Comunicado('Sucesso', 'Devolução registrada com sucesso!');
+
+    // FRONT RECEBER A DATA E HORA
+    const resposta = {
+      status: sucesso.status,
+      mensagem: sucesso.mensagem,
+      dataDevolucao: retorno.dataDevolucao,
+      horaDevolucao: retorno.horaDevolucao
+    };
+    
+    console.log('Resposta enviada ao frontend (devolução):', resposta);
+    
+    return res.status(200).json(resposta);
+
+  } catch (error) {
+    console.error('Erro no controller (registrarDevolucao):', error);
+    const erro = new Comunicado('Erro', error.message || 'Erro ao registrar devolução.');
+    return res.status(500).json(erro);
+  }
+}
+
+// Buscar todos os empréstimos
+export async function getEmprestimos(req, res) {
+  try {
+    const emprestimos = await EmprestimoRepository.buscarTodos();
+    return res.status(200).json(emprestimos);
+  } catch (error) {
+    console.error('Erro no controller (getEmprestimos):', error);
+    const erro = new Comunicado('Erro', 'Erro ao buscar empréstimos.');
+    return res.status(500).json(erro);
+  }
+}
+
+// Buscar todos os empréstimos ativos
+export async function getEmprestimosAtivos(req, res) {
+  try {
+    const emprestimos = await EmprestimoRepository.buscarAtivos();
+    return res.status(200).json(emprestimos);
+  } catch (error) {
+    console.error('Erro no controller (getEmprestimosAtivos):', error);
+    const erro = new Comunicado('Erro', 'Erro ao buscar empréstimos ativos.');
+    return res.status(500).json(erro);
+  }
+}
+
+// Buscar empréstimos ativos de um aluno
+export async function getEmprestimosAtivosPorAluno(req, res) {
+  const { ra } = req.params;
+
+  if (!ra || typeof ra !== 'string' || ra.trim().length === 0) {
+    const erro = new Comunicado('Erro', 'RA do aluno é obrigatório.');
+    return res.status(400).json(erro);
+  }
+
+  try {
+    const emprestimos = await EmprestimoRepository.buscarAtivosPorAluno(ra.trim());
+    return res.status(200).json(emprestimos);
+  } catch (error) {
+    console.error('Erro no controller (getEmprestimosAtivosPorAluno):', error);
+    const erro = new Comunicado('Erro', 'Erro ao buscar empréstimos ativos.');
+    return res.status(500).json(erro);
+  }
+}
