@@ -1,3 +1,4 @@
+// Modelo/classe de dados 
 class Aluno {
   constructor(ra, nome, email, telefone) {
     this.ra = ra;

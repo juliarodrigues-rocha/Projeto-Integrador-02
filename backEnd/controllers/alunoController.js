@@ -1,13 +1,23 @@
-import { AlunoRepository } from '../repositories/alunoRepository.js';
-import Aluno from '../models/Aluno.js';
-import Comunicado from '../models/Comunicado.js';
+import { AlunoRepository } from '../repositories/alunoRepository.js'; //Classe que acessa o banco de dados (camada de persistência)
+import Aluno from '../models/Aluno.js'; //Modelo/classe que representa um aluno
+import Comunicado from '../models/Comunicado.js'; //Modelo para padronizar respostas de sucesso/erro
 import { openDb } from "../database/conexao.js";
 
+// LÓGICA DE NEGÓCIO 
+
+// Exporta a função para ser usada em outros arquivos (routes)
+// recebe Objeto da requisição HTTP (contém dados enviados pelo frontend)
+// recebe Objeto da resposta HTTP (usado para enviar resposta ao frontend)
 export const cadastrarAluno = async (req, res) => {
-  const { ra, nome, email, telefone } = req.body;
 
-  const aluno = new Aluno(ra, nome, email, telefone);
+  // Obtém os dados enviados pelo frontend via POST
+  const { ra, nome, email, telefone } = req.body; //Contém os dados JSON enviados pelo frontend
 
+  // Encapsula os dados em um objeto tipado  
+  const aluno = new Aluno(ra, nome, email, telefone); // Cria uma instância da classe `Aluno`(models) com os dados recebidos
+
+
+  // VALIDAÇÕES DE SEGURANÇA 
   if (!ra || !nome || !email || !telefone) {
     return res.status(400).json(new Comunicado('Dados incompletos', 'Todos os campos são obrigatórios.'));
   }
@@ -31,14 +41,19 @@ export const cadastrarAluno = async (req, res) => {
   if (!/^[0-9]{8,11}$/.test(telefone)) {
     return res.status(400).json(new Comunicado('Telefone inválido', 'Telefone inválido. Deve conter apenas números, mínimo 8 e máximo 11 números.'));
   }
-
+  
   try {
+    // BUSCA VIA REPOSITORY, POIS O REPOSITORY ACESSA O BD
     const alunoExistente = await AlunoRepository.buscarPorRA(ra);
+
     if (alunoExistente) {
       return res.status(409).json(new Comunicado('Aluno já cadastrado', 'Aluno com este RA já cadastrado.'));
     }
 
+    // CADASTRA VIA REPOSITORY, POIS O REPOSITORY ACESSA O BD
+    // `await`: Aguarda a resposta da consulta ao banco
     await AlunoRepository.cadastrar(aluno);
+    
     res.status(201).json(new Comunicado('Sucesso', 'Aluno cadastrado com sucesso!'));
   } catch (error) {
     console.error('Erro no controller de cadastro de aluno:', error);
@@ -48,22 +63,22 @@ export const cadastrarAluno = async (req, res) => {
   }
 };
 
-/**
- * Consulta a pontuação de um aluno específico (últimos 6 meses)
- */
+
+
+/* VISUALIZAR PONTUAÇÃO DO ALUNO ESPECÍFICO (últimos 6 meses) */
 export const VisualizarPontuacao = async (req, res) => {
   const { ra } = req.params;
-
   try {
     if (!ra) return res.status(400).json({ erro: true, mensagem: "O RA deve ser informado." });
     if (!/^[0-9]{8}$/.test(ra)) {
       return res.status(400).json({ erro: true, mensagem: "O RA deve conter exatamente 8 números." });
     }
-
+    
+    // BUSCA VIA REPOSITORY
     const aluno = await AlunoRepository.buscarPorRA(ra);
     if (!aluno) return res.status(404).json({ erro: true, mensagem: "Aluno não encontrado." });
 
-    // busca no repository
+    // BUSCA VIA REPOSITORY
     const livros = await AlunoRepository.buscarLivrosUltimos6Meses(ra);
 
     const totalLivros = livros.length;
@@ -87,10 +102,8 @@ export const VisualizarPontuacao = async (req, res) => {
 };
 
 
-/**
- * Classificação geral de todos os alunos no último semestre (6 meses)
- * Retorna o total de livros lidos, classificação e resumo por nível.
- */
+
+/* CLASSIFICAÇÃO GERAL -> Trabalha com entidade ALUNO, por isso está aqui, back organizado em entidade de negócio */
 export const ClassificacaoGeral = async (_req, res) => {
   try {
     // busca no repository

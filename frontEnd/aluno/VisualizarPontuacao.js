@@ -21,6 +21,8 @@ document.getElementById("buscar").addEventListener("click", async () => {
 
 
   try {
+
+    // Requisição GET para Routes 
     const response = await fetch(`http://localhost:3000/alunos/pontuacao/${ra}`);
     const data = await response.json();
 

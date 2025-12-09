@@ -1,10 +1,10 @@
 import { EmprestimoRepository } from '../repositories/emprestimoRepository.js';
 import Comunicado from '../models/Comunicado.js';
 
-// Registrar retirada de livro (empréstimo)
+// RETIRADA DE LIVRO (empréstimo)
 export async function registrarEmprestimo(req, res) {
-  const { ra, codigoLivro } = req.body;
 
+  const { ra, codigoLivro } = req.body;
   if (!ra || !codigoLivro) {
     const erro = new Comunicado('Erro', 'RA e código do livro são obrigatórios.');
     return res.status(400).json(erro);
@@ -51,7 +51,7 @@ export async function registrarEmprestimo(req, res) {
   }
 }
 
-// Registrar devolução de livro
+// DEVOLUÇÃO DE LIVRO
 export async function registrarDevolucao(req, res) {
   const { ra, codigoLivro } = req.body;
 

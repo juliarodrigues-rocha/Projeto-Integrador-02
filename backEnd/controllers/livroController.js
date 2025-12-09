@@ -44,8 +44,8 @@ function validarCamposLivro({ codigo, titulo, autor, quantidade, categoria, edit
   return null;
 }
 
-//   CADASTRAR LIVRO
 
+//   CADASTRAR LIVRO
 export const cadastrarLivro = async (req, res) => {
   try {
     const { codigo, titulo, autor, quantidade, categoria, editora } = req.body;
@@ -54,7 +54,7 @@ export const cadastrarLivro = async (req, res) => {
     if (erroValidacao) {
       return res.status(400).json(erroValidacao);
     }
-
+     // Valida Via Repository
     const livroExistente = await LivroRepository.buscarPorCodigo(codigo);
 
     if (livroExistente) {
@@ -63,6 +63,8 @@ export const cadastrarLivro = async (req, res) => {
     }
 
     const livro = new Livro(codigo, titulo, autor, quantidade, categoria, editora);
+
+     // Valida Via Repository
     await LivroRepository.cadastrar(livro);
 
     return res.status(201)
@@ -78,7 +80,6 @@ export const cadastrarLivro = async (req, res) => {
 
 
 //   BUSCAR TODOS OS LIVROS
-
 export const getLivros = async (req, res) => {
   try {
     const livros = await LivroRepository.buscarTodos();
@@ -94,7 +95,6 @@ export const getLivros = async (req, res) => {
 
 
 //   BUSCAR LIVRO POR CÓDIGO
-
 export const getLivroPorCodigo = async (req, res) => {
   try {
     const { codigo } = req.params;
@@ -114,6 +114,7 @@ export const getLivroPorCodigo = async (req, res) => {
       .json(new Comunicado('Erro interno do servidor', 'Erro interno do servidor.'));
   }
 };
+
 
 // ATUALIZAR LIVRO
 export const atualizarLivro = async (req, res) => {
