@@ -28,7 +28,7 @@ export class AlunoRepository {
   }
 
   // CONSULTAR LIVROS 
-  static async buscarLivrosUltimos6Meses(ra) {
+  static async buscarPontuacaoUltimos6Meses(ra) {
     const db = await openDb();
     try {
       const [linhas] = await db.execute(

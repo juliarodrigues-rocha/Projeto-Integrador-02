@@ -1,145 +1,139 @@
-import { EmprestimoRepository } from '../repositories/emprestimoRepository.js';
+import { AlunoRepository } from '../repositories/alunoRepository.js';
+import Aluno from '../models/Aluno.js';
 import Comunicado from '../models/Comunicado.js';
+import { openDb } from "../database/conexao.js";
 
-// RETIRADA DE LIVRO (empréstimo)
-export async function registrarEmprestimo(req, res) {
+export const cadastrarAluno = async (req, res) => {
+  const { ra, nome, email, telefone } = req.body;
 
-  const { ra, codigoLivro } = req.body;
-  if (!ra || !codigoLivro) {
-    const erro = new Comunicado('Erro', 'RA e código do livro são obrigatórios.');
-    return res.status(400).json(erro);
+  const aluno = new Aluno(ra, nome, email, telefone);
+
+  if (!ra || !nome || !email || !telefone) {
+    return res.status(400).json(new Comunicado('Dados incompletos', 'Todos os campos são obrigatórios.'));
   }
 
-  // Validação de tipos
-  if (typeof ra !== 'string' || typeof codigoLivro !== 'string') {
-    const erro = new Comunicado('Erro', 'RA e código do livro devem ser strings.');
-    return res.status(400).json(erro);
+  // Validação de formato para RA (apenas números, mínimo 5 e máximo 8 dígitos)
+  if (!/^[0-9]{8}$/.test(ra)) {
+    return res.status(400).json(new Comunicado('RA inválido', 'RA inválido. Deve conter exatamente 8 números.'));
   }
 
-  // Normalizar dados
-  const raTrimmed = ra.trim();
-  const codigoLivroTrimmed = codigoLivro.trim();
-
-  if (raTrimmed.length === 0 || codigoLivroTrimmed.length === 0) {
-    const erro = new Comunicado('Erro', 'RA e código do livro não podem estar vazios.');
-    return res.status(400).json(erro);
+  // Validação de formato para Nome (apenas letras e espaços, mínimo 3 letras)
+  if (!/^[A-Za-zÀ-ÖØ-öø-ÿ\s]{3,}$/.test(nome)) {
+    return res.status(400).json(new Comunicado('Nome inválido', 'O nome digitado é inválido. O nome deve conter apenas letras.'));
   }
 
-  try {
-    const retorno = await EmprestimoRepository.registrarEmprestimo(raTrimmed, codigoLivroTrimmed);
-    
-    console.log('Retorno do repository (empréstimo):', retorno);
-    
-    const sucesso = new Comunicado('Sucesso', 'Empréstimo registrado com sucesso!');
-
-    // FRONT RECEBER A DATA E HORA
-    const resposta = {
-      status: sucesso.status,
-      mensagem: sucesso.mensagem,
-      dataEmprestimo: retorno.dataEmprestimo,
-      horaEmprestimo: retorno.horaEmprestimo
-    };
-    
-    console.log('Resposta enviada ao frontend (empréstimo):', resposta);
-    
-    return res.status(201).json(resposta);
-
-  } catch (error) {
-    console.error('Erro no controller (registrarEmprestimo):', error);
-    const erro = new Comunicado('Erro', error.message || 'Erro ao registrar empréstimo.');
-    return res.status(500).json(erro);
-  }
-}
-
-// DEVOLUÇÃO DE LIVRO
-export async function registrarDevolucao(req, res) {
-  const { ra, codigoLivro } = req.body;
-
-  if (!ra || !codigoLivro) {
-    const erro = new Comunicado('Erro', 'RA e código do livro são obrigatórios.');
-    return res.status(400).json(erro);
+  // Validação de formato para Email
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json(new Comunicado('Email inválido', 'Email inválido.'));
   }
 
-  // Validação de tipos
-  if (typeof ra !== 'string' || typeof codigoLivro !== 'string') {
-    const erro = new Comunicado('Erro', 'RA e código do livro devem ser strings.');
-    return res.status(400).json(erro);
-  }
-
-  // Normalizar dados
-  const raTrimmed = ra.trim();
-  const codigoLivroTrimmed = codigoLivro.trim();
-
-  if (raTrimmed.length === 0 || codigoLivroTrimmed.length === 0) {
-    const erro = new Comunicado('Erro', 'RA e código do livro não podem estar vazios.');
-    return res.status(400).json(erro);
+  // Validação de formato para Telefone (apenas números, mínimo 8 e máximo 11 dígitos)
+  if (!/^[0-9]{8,11}$/.test(telefone)) {
+    return res.status(400).json(new Comunicado('Telefone inválido', 'Telefone inválido. Deve conter apenas números, mínimo 8 e máximo 11 números.'));
   }
 
   try {
-    const retorno = await EmprestimoRepository.registrarDevolucao(raTrimmed, codigoLivroTrimmed);
-    
-    console.log('Retorno do repository (devolução):', retorno);
-    
-    const sucesso = new Comunicado('Sucesso', 'Devolução registrada com sucesso!');
+    const alunoExistente = await AlunoRepository.buscarPorRA(ra);
+    if (alunoExistente) {
+      return res.status(409).json(new Comunicado('Aluno já cadastrado', 'Aluno com este RA já cadastrado.'));
+    }
 
-    // FRONT RECEBER A DATA E HORA
-    const resposta = {
-      status: sucesso.status,
-      mensagem: sucesso.mensagem,
-      dataDevolucao: retorno.dataDevolucao,
-      horaDevolucao: retorno.horaDevolucao
-    };
-    
-    console.log('Resposta enviada ao frontend (devolução):', resposta);
-    
-    return res.status(200).json(resposta);
-
+    await AlunoRepository.cadastrar(aluno);
+    res.status(201).json(new Comunicado('Sucesso', 'Aluno cadastrado com sucesso!'));
   } catch (error) {
-    console.error('Erro no controller (registrarDevolucao):', error);
-    const erro = new Comunicado('Erro', error.message || 'Erro ao registrar devolução.');
-    return res.status(500).json(erro);
+    console.error('Erro no controller de cadastro de aluno:', error);
+    console.error('Stack trace:', error.stack);
+    const mensagemErro = error.message || 'Erro interno do servidor.';
+    res.status(500).json(new Comunicado('Erro interno do servidor', mensagemErro));
   }
-}
+};
 
-// Buscar todos os empréstimos
-export async function getEmprestimos(req, res) {
-  try {
-    const emprestimos = await EmprestimoRepository.buscarTodos();
-    return res.status(200).json(emprestimos);
-  } catch (error) {
-    console.error('Erro no controller (getEmprestimos):', error);
-    const erro = new Comunicado('Erro', 'Erro ao buscar empréstimos.');
-    return res.status(500).json(erro);
-  }
-}
-
-// Buscar todos os empréstimos ativos
-export async function getEmprestimosAtivos(req, res) {
-  try {
-    const emprestimos = await EmprestimoRepository.buscarAtivos();
-    return res.status(200).json(emprestimos);
-  } catch (error) {
-    console.error('Erro no controller (getEmprestimosAtivos):', error);
-    const erro = new Comunicado('Erro', 'Erro ao buscar empréstimos ativos.');
-    return res.status(500).json(erro);
-  }
-}
-
-// Buscar empréstimos ativos de um aluno
-export async function getEmprestimosAtivosPorAluno(req, res) {
+/**
+ * Consulta a pontuação de um aluno específico (últimos 6 meses)
+ */
+export const VisualizarPontuacao = async (req, res) => {
   const { ra } = req.params;
 
-  if (!ra || typeof ra !== 'string' || ra.trim().length === 0) {
-    const erro = new Comunicado('Erro', 'RA do aluno é obrigatório.');
-    return res.status(400).json(erro);
-  }
-
   try {
-    const emprestimos = await EmprestimoRepository.buscarAtivosPorAluno(ra.trim());
-    return res.status(200).json(emprestimos);
+    if (!ra) return res.status(400).json({ erro: true, mensagem: "O RA deve ser informado." });
+    if (!/^[0-9]{8}$/.test(ra)) {
+      return res.status(400).json({ erro: true, mensagem: "O RA deve conter exatamente 8 números." });
+    }
+
+    const aluno = await AlunoRepository.buscarPorRA(ra);
+    if (!aluno) return res.status(404).json({ erro: true, mensagem: "Aluno não encontrado." });
+
+    const livros = await AlunoRepository.buscarPontuacaoUltimos6Meses(ra);
+
+    const totalLivros = livros.length;
+    const classificacao =
+      totalLivros <= 5 ? "Leitor Iniciante" :
+      totalLivros <= 10 ? "Leitor Regular" :
+      totalLivros <= 20 ? "Leitor Ativo" :
+      "Leitor Extremo";
+
+    return res.status(200).json({
+      erro: false,
+      ra,
+      totalLivros,
+      classificacao,
+      livros
+    });
+
   } catch (error) {
-    console.error('Erro no controller (getEmprestimosAtivosPorAluno):', error);
-    const erro = new Comunicado('Erro', 'Erro ao buscar empréstimos ativos.');
-    return res.status(500).json(erro);
+    return res.status(500).json({ erro: true, mensagem: "Erro interno ao consultar pontuação." });
   }
-}
+};
+
+
+/**
+ * Classificação geral de todos os alunos no último semestre (6 meses)
+ * Retorna o total de livros lidos, classificação e resumo por nível.
+ */
+export const ClassificacaoGeral = async (_req, res) => {
+  try {
+    const linhas = await AlunoRepository.buscarClassificacaoGeral();  // ✔ usa o repository
+
+    const ranking = linhas.map((linha) => {
+      const total = Number(linha.totalLivros) || 0;
+      const classificacao =
+        total <= 5 ? "Leitor Iniciante" :
+        total <= 10 ? "Leitor Regular" :
+        total <= 20 ? "Leitor Ativo" :
+        "Leitor Extremo";
+
+      return {
+        ra: linha.ra,
+        nome: linha.nome,
+        totalLivros: total,
+        classificacao,
+      };
+    });
+
+    const resumo = {
+      iniciantes: 0,
+      regulares: 0,
+      ativos: 0,
+      extremos: 0,
+    };
+
+    for (const aluno of ranking) {
+      switch (aluno.classificacao) {
+        case "Leitor Iniciante": resumo.iniciantes++; break;
+        case "Leitor Regular": resumo.regulares++; break;
+        case "Leitor Ativo": resumo.ativos++; break;
+        case "Leitor Extremo": resumo.extremos++; break;
+      }
+    }
+
+    return res.status(200).json({
+      erro: false,
+      totalAlunos: ranking.length,
+      resumo,
+      ranking,
+    });
+
+  } catch (error) {
+    return res.status(500).json({ erro: true, mensagem: "Erro interno ao consultar classificação geral." });
+  }
+};
