@@ -1,7 +1,9 @@
 import { openDb } from '../database/conexao.js';
 
+// ACESSO AO BANCO DE DADOS
 export class AlunoRepository {
-
+  
+  // CADASTRO DE ALUNO
   static async cadastrar(aluno) {
     const db = await openDb();
     try {
@@ -25,7 +27,7 @@ export class AlunoRepository {
     }
   }
 
-  // buscar livros lidos últimos 6 meses
+  // CONSULTAR LIVROS 
   static async buscarLivrosUltimos6Meses(ra) {
     const db = await openDb();
     try {
@@ -52,7 +54,7 @@ export class AlunoRepository {
     }
   }
 
-  // classificação geral
+  // VISUALIZAR PONTUAÇÃO 
   static async buscarClassificacaoGeral() {
     const db = await openDb();
     try {

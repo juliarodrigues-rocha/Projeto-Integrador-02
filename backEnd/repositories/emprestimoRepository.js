@@ -2,7 +2,7 @@ import { openDb } from '../database/conexao.js';
 
 export class EmprestimoRepository {
 
-  // Registrar uma nova retirada de livro
+  // Registrar uma nova RETIRADA DE LIVRO
   static async registrarEmprestimo(raAluno, codigoLivro) {
     const db = await openDb();
     try {
@@ -51,7 +51,7 @@ export class EmprestimoRepository {
     }
   }
 
-  // Registrar devolução de livro
+  // Registrar DEVOLUÇÃO DE LIVRO
   static async registrarDevolucao(raAluno, codigoLivro) {
     const db = await openDb();
     try {
