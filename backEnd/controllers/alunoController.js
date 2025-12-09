@@ -103,7 +103,7 @@ export const VisualizarPontuacao = async (req, res) => {
 
 
 
-/* CLASSIFICAÇÃO GERAL -> Trabalha com entidade ALUNO, por isso está aqui, back organizado em entidade de negócio */
+/* CLASSIFICAÇÃO GERAL -> Trabalha com entidade ALUNO, por isso está aqui, back organizado em entidade de negócio m */
 export const ClassificacaoGeral = async (_req, res) => {
   try {
     // busca no repository
