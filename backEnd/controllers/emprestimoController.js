@@ -1,4 +1,5 @@
 import { EmprestimoRepository } from '../repositories/emprestimoRepository.js';
+import { AlunoRepository } from '../repositories/alunoRepository.js';
 import Comunicado from '../models/Comunicado.js';
 
 // RETIRADA DE LIVRO (empréstimo)
