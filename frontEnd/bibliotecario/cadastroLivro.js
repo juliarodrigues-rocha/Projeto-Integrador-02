@@ -1,10 +1,3 @@
-// LIMPAR MENSAGEM AO CLICAR NO BOTÃO RESET
-document.querySelector("form").addEventListener("reset", () => {
-  const msg = document.getElementById("mensagem");
-  msg.innerText = "";
-  msg.style.color = "";
-});
-
 document.querySelector("form").addEventListener("submit", async (e) => {
       e.preventDefault();
 
