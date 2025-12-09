@@ -54,7 +54,7 @@ export const cadastrarLivro = async (req, res) => {
     if (erroValidacao) {
       return res.status(400).json(erroValidacao);
     }
-     // Valida Via Repository
+     // Se houver livro existente, não podemos cadastrar
     const livroExistente = await LivroRepository.buscarPorCodigo(codigo);
 
     if (livroExistente) {

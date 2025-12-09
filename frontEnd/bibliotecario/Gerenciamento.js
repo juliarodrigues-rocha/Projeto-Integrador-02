@@ -1,8 +1,6 @@
-/* Pega os elementos do HTML para poder alterar eles via JS
-Por exemplo: tabelaLivros aponta para o <tbody> onde a tabela será preenchida.*/
+const API_BASE = "http://localhost:3000"; //API BASE, pois faremos várias requisições neste arquivo
 
-const API_BASE = "http://localhost:3000";
-
+//Pega os elementos do HTML para poder alterá-los via JS, pelo ID
 const tabelaLivros = document.getElementById("tabelaLivros");
 const tabelaEmprestados = document.getElementById("tabelaEmprestados");
 const tabelaHistorico = document.getElementById("tabelaHistorico");
@@ -23,7 +21,7 @@ const campoCategoria = document.getElementById("editarCategoria");
 const campoEditora = document.getElementById("editarEditora");
 const campoQuantidade = document.getElementById("editarQuantidade");
 
-let livrosCache = [];
+let livrosCache = []; //Variável global -> Pode ser usada em várias partes do programa
 
 // Funções a seguir apenas de formatação
 
@@ -51,7 +49,6 @@ function formatarDataHora(data, hora) {
 }
 
 // Função de exibir mensagens nas tabelas -> Usadas antes da requisição
-
 function exibirMensagem(tbody, colunas, mensagem) {
   tbody.innerHTML = `<tr><td class="mensagem-vazia" colspan="${colunas}">${mensagem}</td></tr>`;
 }
@@ -60,26 +57,22 @@ function setCarregando(tbody, colunas) {
   exibirMensagem(tbody, colunas, "Carregando...");
 }
 
-//Buscar JSON do BackEnd
-
-async function fetchJson(url) {
-  const resposta = await fetch(url);
+async function fetchJson(url) { // Recebe um parâmetro url, que é o endereço do BackEnd de onde os dados serão buscados
+  const resposta = await fetch(url); //Buscar JSON do BackEnd, fazendo uma requisição
   if (!resposta.ok) {
     let detalhe = "";
-    try {
-      const erro = await resposta.json();
-      detalhe = erro.mensagem || erro.status || "";
+    try { //Essa parte tenta extrair uma mensagem de erro mais detalhada do corpo da resposta
+      const erro = await resposta.json();  //Tenta transformar a resposta em JSON
+      detalhe = erro.mensagem || erro.status || ""; //Tente pegar a msg de erro
     } catch (_) {
-      detalhe = resposta.statusText;
+      detalhe = resposta.statusText; //Se não conseguir, pega a mensagem padrão do navegador
     }
     throw new Error(detalhe || "Não foi possível carregar os dados.");
   }
   return resposta.json();
 }
 
-/* Renderizar tabelas -> Ela pega o array de livros do backend e transforma em linha de tabela HTML
-JS preenche a tabela inteira dinamicamente */
-
+//Renderizar tabelas -> Pega-se o array de livros do backend e transforma em linha de tabela HTML
 function renderizarLivros(livros = []) {
   if (!livros.length) {
     // Evita renderizar tabela vazia
@@ -87,15 +80,12 @@ function renderizarLivros(livros = []) {
     return;
   }
 
-  /*Armazena os livros em uma variável global (livrosCache) usada por outras partes do script
-  (ex: quando o usuário clica em editar, o handler busca o livro por código dentro desse cache) */
-
+  /*Armazena os livros em uma variável global (livrosCache)
+  (ex: quando o usuário clica em editar, busca-se o livro por código dentro desse cache) */
   livrosCache = livros;
 
-  /* livros.map((livro) => { ... }) percorre cada livro e retorna uma string HTML representando uma <tr> para esse livro.
-  A tabelaLivros.innerHTML = ... -> substitui o conteúdo do <tbody id="tabelaLivros"> com esse HTML gerado —> isto atualiza a tabela inteira de uma vez
+  /*A tabelaLivros.innerHTML = ... -> substitui o conteúdo do <tbody id="tabelaLivros"> com esse HTML gerado —> isto atualiza a tabela inteira de uma vez
   O .map() pega um array e transforma cada item em outra coisa, criando um novo array.*/
-
   tabelaLivros.innerHTML = livros
     .map((livro) => {
       const statusDisponivel = livro.STATUS === "Disponível" && Number(livro.QTD) > 0;
@@ -121,11 +111,10 @@ function renderizarLivros(livros = []) {
     /*Os botões de ação têm atributos data-acao e data-codigo —> isso permite o event delegation 
     (um único click listener em tabelaLivros captura cliques e lê data-codigo para identificar o livro)*/
 
-    // .join("") -> concatena todas as strings num único HTML.
-    .join("");
+    .join(""); //Concatena todas as strings num único HTML
 }
 
-function renderizarEmprestados(emprestimos = []) {
+function renderizarEmprestados(emprestimos = []) { // Preenche dinbamicamente a tabela com os dados que recebe
   if (!emprestimos.length) {
     exibirMensagem(tabelaEmprestados, 6, "Nenhum empréstimo pendente.");
     return;
@@ -147,7 +136,7 @@ function renderizarEmprestados(emprestimos = []) {
     .join("");
 }
 
-function renderizarHistorico(emprestimos = []) {
+function renderizarHistorico(emprestimos = []) { // Preenche dinbamicamente a tabela com os dados que recebe
   if (!emprestimos.length) {
     exibirMensagem(tabelaHistorico, 6, "Nenhum empréstimo registrado.");
     return;
@@ -174,32 +163,24 @@ function renderizarHistorico(emprestimos = []) {
 
 /*Atualiza: total de títulos, exemplares disponíveis, exemplares emprestados
 E escreve nos <strong> do HTML*/
-
 function atualizarResumo(livros = [], emprestimosAtivos = []) {
-  const totalTitulos = livros.length;
-  const totalDisponiveis = livros.reduce((acc, livro) => {
+  const totalTitulos = livros.length;  //Conta qts livros existem no total
+  //Calcula qts exemplares estão disponíveis no estoque
+  const totalDisponiveis = livros.reduce((acc, livro) => { //Reduce percorre cada livro e soma sua quantidade (livro.QTD)
     const quantidade = Number(livro.QTD);
-    return acc + (Number.isFinite(quantidade) && quantidade > 0 ? quantidade : 0);
+    return acc + (Number.isFinite(quantidade) && quantidade > 0 ? quantidade : 0); // Garante que só some valores válidos e positivos.
   }, 0);
-  const totalEmprestados = Array.isArray(emprestimosAtivos) ? emprestimosAtivos.length : 0;
+  // Conta quantos livros estão emprestados atualmente
+  const totalEmprestados = Array.isArray(emprestimosAtivos) ? emprestimosAtivos.length : 0; // Se emprestimosAtivos não for um array, retorna 0.
 
+  //Atualiza dinamicamente os elementos HTML que mostram os números do resumo:
   totalLivrosSpan.textContent = totalTitulos;
   livrosDisponiveisSpan.textContent = totalDisponiveis;
   livrosEmprestadosSpan.textContent = totalEmprestados;
 }
 
-
-/* Essa função 
--> mostra Carregando... nas tabelas
--> faz 3 chamadas simultâneas ao backend
--> preenche as 3 tabelas
--> atualiza o resumo
-
-É chamada quando:
-->clica em "Atualizar"
--> página carrega */
-
-async function carregarGerenciamento() {
+// Carregar todos os dados da página de gerenciamento (livros, empréstimos ativos e histórico), atualizar as tabelas e exibir mensagens de erro ou carregamento.
+async function carregarGerenciamento() { // Mostra Carregando... nas tabelas
   setCarregando(tabelaLivros, 7);
   setCarregando(tabelaEmprestados, 6);
   setCarregando(tabelaHistorico, 6);
@@ -207,28 +188,31 @@ async function carregarGerenciamento() {
    // Promise.all() faz as três ao mesmo tempo → mais rápido.
 
   try {
-    const [livros, emprestimosAtivos, historico] = await Promise.all([
+    // Faz 3 chamadas simultâneas ao backend 
+    const [livros, emprestimosAtivos, historico] = await Promise.all([ //Promise.all() executa todas as requisições simultaneamente, e só continua quando todas terminarem
       fetchJson(`${API_BASE}/api/livros`),
       fetchJson(`${API_BASE}/api/emprestimos/ativos`),
       fetchJson(`${API_BASE}/api/emprestimos`),
     ]);
 
+    // Renderizar os dados no HTML
+    //Cada função pega os dados e monta dinamicamente a tabela correspondente
     renderizarLivros(livros);
     renderizarEmprestados(emprestimosAtivos);
     renderizarHistorico(historico);
-    atualizarResumo(livros, emprestimosAtivos);
-  } catch (error) {
+    atualizarResumo(livros, emprestimosAtivos); //Atualizar o resumo dos livros
+  } catch (error) { //Msg de erro exibidas no lugar das tabelas
     exibirMensagem(tabelaLivros, 7, `Erro ao carregar livros: ${error.message}`);
     exibirMensagem(tabelaEmprestados, 6, `Erro ao carregar empréstimos: ${error.message}`);
     exibirMensagem(tabelaHistorico, 6, `Erro ao carregar histórico: ${error.message}`);
   }
 }
 
-btnAtualizar.addEventListener("click", carregarGerenciamento);
-document.addEventListener("DOMContentLoaded", carregarGerenciamento);
+//A função é chamada quando:
+btnAtualizar.addEventListener("click", carregarGerenciamento); //Clica em atualizar
+document.addEventListener("DOMContentLoaded", carregarGerenciamento); // Página carrega
 
-// ------------ Interações de edição/deleção ------------
-
+// Interações de edição/deleção
 function abrirModalEdicao(livro) {
   campoCodigo.value = livro.CODIGO;
   campoTitulo.value = livro.TITULO;
@@ -241,7 +225,7 @@ function abrirModalEdicao(livro) {
 }
 
 function fecharModalEdicao() {
-  modalEditar.classList.add("oculto");
+  modalEditar.classList.add("oculto"); //Add classed oculta -> Some a caixa
   formEditarLivro.reset();
 }
 
@@ -250,28 +234,25 @@ function mostrarMensagemEdicao(texto, tipo = "erro") {
   mensagemEdicao.style.color = tipo === "sucesso" ? "#1f7a3b" : "#c62828";
 }
 
-// Sempre que alguém clicar em QUALQUER coisa dentro da tabela de livros, executa essa função -> delegação de eventos
+// Sempre que alguém clicar em QUALQUER elemento dentro da tabela de livros,
+// esta função será executada → isso é delegação de eventos
 tabelaLivros.addEventListener("click", (event) => {
 
-  /*event.target = o elemento exato onde você clicou (ex: pode ser o texto do botão)
-
-  .closest("button[data-acao]") -> sobe na hierarquia até achar um <button> que tenha o atributo data-acao.
-
-  Então ele encontrará -> <button class="btn editar" data-acao="editar" data-codigo="123">Editar</button>
-  <button class="btn deletar" data-acao="deletar" data-codigo="123">Deletar</button>*/
-  const botao = event.target.closest("button[data-acao]");
-  if (!botao) return;
+  const botao = event.target.closest("button[data-acao]"); // Event.target = o elemento exato onde você clicou (ex: pode ser o texto dentro do botão).
+  if (!botao) return; // .closest("button[data-acao]") → sobe na hierarquia de elementos até encontrar um <button> que possua o atributo data-acao.
+   /* 
+     Ou seja, ele encontra botões como:
+     <button class="btn editar" data-acao="editar" data-codigo="123">Editar</button>
+     <button class="btn deletar" data-acao="deletar" data-codigo="123">Deletar</button>
+  */
 
 
   // Pega o código do livro a partir do botão
   // .dataset pega atributos HTML que começam com data-
   const codigo = botao.dataset.codigo;
 
-  // Procurando o livro correspondente no cache. LivrosCache -> Lista vinda do back
-  // Find procura dentro derssa lista o livro com o código clicado
-  //Converte tudo para string
-  const livro = livrosCache.find((l) => String(l.CODIGO) === String(codigo));
-  if (!livro) return;
+  const livro = livrosCache.find((l) => String(l.CODIGO) === String(codigo)); // Procurando o livro correspondente no cache. LivrosCache -> Lista vinda do back
+  if (!livro) return; // Find() procura dentro derssa lista o livro com o mesmo código. Depois converte tudo para string
 
   // Verifica qual ação o botão pede
   if (botao.dataset.acao === "editar") {
@@ -281,14 +262,15 @@ tabelaLivros.addEventListener("click", (event) => {
   }
 });
 
-btnCancelarEdicao.addEventListener("click", fecharModalEdicao);
+btnCancelarEdicao.addEventListener("click", fecharModalEdicao); // Ao cancelar a edição, fecha o modal
 
-//Aqui cria um objeto com os dados atualizados preenchidos pelo usuário
-// Executa envio do formulário, quando clicar em "salvar" é ativado
-formEditarLivro.addEventListener("submit", async (event) => {
+
+//Essa função envia uma requisição PUT para atualizar um livro existente no banco
+formEditarLivro.addEventListener("submit", async (event) => { // Executa envio do formulário, quando clicar em "salvar" é ativado
   event.preventDefault();
-  const codigo = campoCodigo.value;
-  const payload = {
+  const codigo = campoCodigo.value; //Pega o codigo do livro sendo editado
+  //Monta o payload (JSON com os dados atualizados)
+  const payload = { //Todos os campos do livro
     titulo: campoTitulo.value.trim(),
     autor: campoAutor.value.trim(),
     categoria: campoCategoria.value.trim(),
@@ -298,7 +280,7 @@ formEditarLivro.addEventListener("submit", async (event) => {
 
   try {
     const resposta = await fetch(`${API_BASE}/api/livros/${codigo}`, {
-      method: "PUT",
+      method: "PUT", // Função da requisição: editar / atualizar um livro existente no banco de dados
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
@@ -313,7 +295,7 @@ formEditarLivro.addEventListener("submit", async (event) => {
     mostrarMensagemEdicao(resultado.mensagem || "Livro atualizado com sucesso!", "sucesso");
     setTimeout(() => {
       fecharModalEdicao();
-      carregarGerenciamento();
+      carregarGerenciamento(); // Carregar todos os dados da página de gerenciamento (livros, empréstimos ativos e histórico), atualizar as tabelas e exibir mensagens de erro ou carregamento.
     }, 800);
   } catch (error) {
     mostrarMensagemEdicao("Erro ao conectar ao servidor.");
@@ -321,12 +303,12 @@ formEditarLivro.addEventListener("submit", async (event) => {
 });
 
 async function deletarLivro(livro) {
-  const confirmar = window.confirm(`Tem certeza que deseja excluir o livro "${livro.TITULO}"?`);
+  const confirmar = window.confirm(`Tem certeza que deseja excluir o livro "${livro.TITULO}"?`);  //Alert
   if (!confirmar) return;
 
   try {
     const codigo = String(livro.CODIGO);
-    const resposta = await fetch(`${API_BASE}/api/livros/${codigo}`, {
+    const resposta = await fetch(`${API_BASE}/api/livros/${codigo}`, { // Requisição para deletar um livro
       method: "DELETE"
     });
 

@@ -38,19 +38,24 @@ export const cadastrarAluno = async (req, res) => {
       return res.status(409).json(new Comunicado('Aluno já cadastrado', 'Aluno com este RA já cadastrado.'));
     }
 
-    await AlunoRepository.cadastrar(aluno);
+    // Verifica se o repository conseguiu inserir (retorna true/false)
+    const cadastrado = await AlunoRepository.cadastrar(aluno);
+
+    if (!cadastrado) {
+      return res.status(400).json(new Comunicado('Erro', 'Não foi possível cadastrar o aluno.'));
+    }
+
     res.status(201).json(new Comunicado('Sucesso', 'Aluno cadastrado com sucesso!'));
   } catch (error) {
     console.error('Erro no controller de cadastro de aluno:', error);
-    console.error('Stack trace:', error.stack);
+    console.error('Stack trace:', error.stack); // Mostra o caminho completo do erro no código
     const mensagemErro = error.message || 'Erro interno do servidor.';
     res.status(500).json(new Comunicado('Erro interno do servidor', mensagemErro));
   }
 };
 
-/**
- * Consulta a pontuação de um aluno específico (últimos 6 meses)
- */
+
+//Consulta a pontuação de um aluno específico (últimos 6 meses)
 export const VisualizarPontuacao = async (req, res) => {
   const { ra } = req.params;
 
@@ -67,10 +72,10 @@ export const VisualizarPontuacao = async (req, res) => {
 
     const totalLivros = livros.length;
     const classificacao =
-      totalLivros <= 5 ? "Leitor Iniciante" :
-      totalLivros <= 10 ? "Leitor Regular" :
-      totalLivros <= 20 ? "Leitor Ativo" :
-      "Leitor Extremo";
+      totalLivros <= 5 ? "Iniciante" :
+      totalLivros <= 10 ? "Regular" :
+      totalLivros <= 20 ? "Ativo" :
+      "Extremo";
 
     return res.status(200).json({
       erro: false,
@@ -86,14 +91,16 @@ export const VisualizarPontuacao = async (req, res) => {
 };
 
 
-/**
- * Classificação geral de todos os alunos no último semestre (6 meses)
- * Retorna o total de livros lidos, classificação e resumo por nível.
+/*
+ Classificação geral de todos os alunos no último semestre (6 meses)
+ Retorna o total de livros lidos, classificação e resumo por nível.
  */
 export const ClassificacaoGeral = async (_req, res) => {
   try {
-    const linhas = await AlunoRepository.buscarClassificacaoGeral();  // ✔ usa o repository
+    const linhas = await AlunoRepository.buscarClassificacaoGeral();  // usa o repository
 
+    //O método map() percorre cada item do array linhas e retorna um novo array, 
+    //Ele cria um novo array chamado ranking com novos objetos, transformados a partir do array original linhas
     const ranking = linhas.map((linha) => {
       const total = Number(linha.totalLivros) || 0;
       const classificacao =
@@ -102,7 +109,7 @@ export const ClassificacaoGeral = async (_req, res) => {
         total <= 20 ? "Leitor Ativo" :
         "Leitor Extremo";
 
-      return {
+      return { //Isso é o ranking. Cada linha do ranking representa um aluno
         ra: linha.ra,
         nome: linha.nome,
         totalLivros: total,

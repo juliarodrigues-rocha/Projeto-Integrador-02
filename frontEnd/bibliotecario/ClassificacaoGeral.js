@@ -1,6 +1,5 @@
-//Receberá a lista de alunos completa do back
 //Variável global para que outras funções acessem ela
-let rankingGeral = [];
+let rankingGeral = []; //Receberá a lista de alunos completa do back
 
 //Renderiza as linhas da tabela de acordo com a lista informada
 function renderizarTabela(lista) {
@@ -19,7 +18,9 @@ function renderizarTabela(lista) {
     return;
   }
 
-  lista.forEach((aluno) => {
+  //lista é um array de objetos
+  // Cada item desse array é um aluno:
+  lista.forEach((aluno) => { //Para cada aluno da lista, vamos inserir na tabela as informações
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${aluno.ra}</td>
@@ -41,9 +42,8 @@ function atualizarCards(resumo) {
 
   if (!resumo) return;
 
-// A linha coloca no HTML o valor do resumo, mas se esse valor não existir, coloca 0.
-//duplo "?" -> Se valor indefinido, nulo ou 0
-  if (spanIniciantes) spanIniciantes.textContent = resumo.iniciantes ?? 0;
+// Coloca no HTML o valor do resumo, mas se esse valor não existir, coloca 0.
+  if (spanIniciantes) spanIniciantes.textContent = resumo.iniciantes ?? 0; //duplo "?" -> Se valor indefinido, nulo ou 0
   if (spanRegulares) spanRegulares.textContent = resumo.regulares ?? 0;
   if (spanAtivos) spanAtivos.textContent = resumo.ativos ?? 0;
   if (spanExtremos) spanExtremos.textContent = resumo.extremos ?? 0;
@@ -70,8 +70,10 @@ function aplicarFiltroRA() {
   renderizarTabela(filtrado);
 }
 
+//Acontece após o doc HTML ser totalmente carregado
 document.addEventListener('DOMContentLoaded', async () => {
   try {
+    //Requisição GET para buscar a classificação geral
     const resposta = await fetch('http://localhost:3000/alunos/classificacao-geral');
     const dados = await resposta.json();
 
@@ -81,6 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
+    //"Dados" é o JSON retornado pela API
     rankingGeral = dados.ranking || [];
     atualizarCards(dados.resumo);
     renderizarTabela(rankingGeral);
@@ -92,19 +95,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   const botaoPesquisar = document.querySelector('.botaoPesquisar');
   const inputPesquisar = document.querySelector('.inputPesquisar');
 
-  //Se existir algum conteúdo escrito, aplica  filtro
+  // Se clicar no botão, aplica o filtro
   if (botaoPesquisar) {
     botaoPesquisar.addEventListener('click', aplicarFiltroRA);
   }
 
+  //Escuta as teclas digitadas no input
   if (inputPesquisar) {
-    //Aqui ele fica "escutando" cada tecla que o usuário pressiona dentro do campo de pesquisa
     inputPesquisar.addEventListener('keyup', (event) => {
       //Se o usuário apertar ENTER → aplica o filtro
       if (event.key === 'Enter') {
         aplicarFiltroRA();
       } else if (!inputPesquisar.value.trim()) {
-        // Se o campo ficar vazio, volta a mostrar todo o ranking
+        //Se o campo ficar vazio, volta a mostrar todo o ranking
         renderizarTabela(rankingGeral);
       }
     });

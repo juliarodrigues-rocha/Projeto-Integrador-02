@@ -5,11 +5,13 @@ export class LivroRepository {
   static async cadastrar(livro) {
     const db = await openDb();
     try {
+      // Toda operação no MySQL retorna um array com informações da execução (resultados ou status)
+      // [result] contém informações sobre o status da execução (insertId, affectedRows, etc.)
       const [result] = await db.execute(
         'INSERT INTO LIVROS (CODIGO, TITULO, AUTOR, QTD, CATEGORIA, EDITORA) VALUES (?, ?, ?, ?, ?, ?)',
         [livro.codigo, livro.titulo, livro.autor, livro.quantidade, livro.categoria, livro.editora]
       );
-      return result.affectedRows > 0;
+      return result.affectedRows > 0; //Se houver linhas afetadas, então o INSERT deu certo
     } catch (error) {
       console.error('Erro ao cadastrar livro:', error);
       throw error;

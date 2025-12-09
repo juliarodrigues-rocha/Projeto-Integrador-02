@@ -48,6 +48,7 @@ async function realizarBusca(busca) {
       const status = livro.QTD > 0 ? "Disponível" : "Emprestado";
       const classe = livro.QTD > 0 ? "disponivel" : "emprestado";
 
+      //Para cada livro do array livros, você cria uma linha <tr> com 4 colunas (<td>):
       tbody.innerHTML += `
         <tr>
           <td>${livro.CODIGO}</td>

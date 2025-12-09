@@ -7,11 +7,13 @@ export class AlunoRepository {
   static async cadastrar(aluno) {
     const db = await openDb();
     try {
+      // Toda operação no MySQL retorna um array com informações da execução (resultados ou status)
+      // [result] contém informações sobre o status da execução (insertId, affectedRows, etc.)
       const [result] = await db.execute(
         'INSERT INTO ALUNOS (RA, NOME, EMAIL, TELEFONE) VALUES (?, ?, ?, ?)',
         [aluno.ra, aluno.nome, aluno.email, aluno.telefone]
       );
-      return result.affectedRows > 0;
+      return result.affectedRows > 0; // Se houver linhas afetadas, então o INSERT deu certo
     } finally {
       await db.end();
     }
@@ -53,6 +55,22 @@ export class AlunoRepository {
       await db.end();
     }
   }
+
+  //ATUALIZAR tabela ALUNOS
+  static async atualizarPontuacaoEClassificacao(ra, pontuacao, classificacao) {
+  const db = await openDb();
+  try {
+    const [resultado] = await db.execute(
+      `UPDATE ALUNOS
+       SET PONTUACAO = ?, CLASSIFICACAO = ?
+       WHERE RA = ?`,
+      [pontuacao, classificacao, ra]
+    );
+    return resultado.affectedRows; // retorna quantas linhas foram atualizadas
+  } finally {
+    await db.end();
+  }
+}
 
   // VISUALIZAR PONTUAÇÃO 
   static async buscarClassificacaoGeral() {

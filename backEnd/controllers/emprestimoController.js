@@ -80,6 +80,18 @@ export async function registrarDevolucao(req, res) {
     
     console.log('Retorno do repository (devolução):', retorno);
     
+    //Atualizar pontuação e classificação do aluno
+    const livros = await AlunoRepository.buscarPontuacaoUltimos6Meses(raTrimmed);
+    const totalLivros = livros.length;
+    const classificacao =
+      totalLivros <= 5 ? "Iniciante" :
+      totalLivros <= 10 ? "Regular" :
+      totalLivros <= 20 ? "Ativo" :
+      "Extremo";
+
+    // Atualiza a tabela ALUNOS
+    await AlunoRepository.atualizarPontuacaoEClassificacao(raTrimmed, totalLivros, classificacao);
+    
     const sucesso = new Comunicado('Sucesso', 'Devolução registrada com sucesso!');
 
     // FRONT RECEBER A DATA E HORA

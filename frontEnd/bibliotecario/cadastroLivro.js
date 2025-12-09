@@ -1,5 +1,5 @@
-document.querySelector("form").addEventListener("submit", async (e) => {
-      e.preventDefault();
+document.querySelector("form").addEventListener("submit", async (e) => { // Toda vez que o formulário for enviado, essa função é executada
+      e.preventDefault(); // Evita o comportamento padrão do formulário, que é recarregar a página. Isso permite que você trate o envio via JavaScript
 
       const msg = document.getElementById("mensagem");
 
@@ -51,11 +51,11 @@ document.querySelector("form").addEventListener("submit", async (e) => {
         return;
       }
 
-      try {
+      try { //Enviando requisição POST ao backEnd
         const response = await fetch("http://localhost:3000/api/livros", {
-          method: "POST",
+          method: "POST", // Indica que você está enviando dados para criar algo no backend
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(livro),
+          body: JSON.stringify(livro), // Livro -> é um objeto JavaScript contendo os dados do livro que você quer enviar
         });
 
         const result = await response.json();

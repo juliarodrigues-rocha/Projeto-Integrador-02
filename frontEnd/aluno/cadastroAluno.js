@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function ()
 
 
   // Função executada quando o usuário submete o formulário 
-  // Escuta o evento de submissão do formulário e usa `await` para requisições assíncronas
+  // Escuta o evento de submissão do formulário e usa `await` para requisições assíncronas(não bloqueia o restante do código enquanto espera a resposta)
   form.addEventListener("submit", async function (e) { 
     e.preventDefault(); // Impede o comportamento padrão do formulário (recarregar a página)
 
@@ -70,7 +70,8 @@ document.addEventListener("DOMContentLoaded", function ()
 
       if (!resposta.ok) {
         const erroData = await resposta.json(); // Converte resposta JSON em objeto
-        mostrarMensagem(erroData.mensagem || erroData.message || `Erro do servidor: ${resposta.status}`, "red");
+        //O Comunicado retornado pelo controller possui as propriedades "status" e "mensagem" que vamos utilizar para mostrar "erroData.mensagem"
+        mostrarMensagem(erroData.mensagem || erroData.message || `Erro do servidor: ${resposta.status}`, "red"); // erroData.message -> O erro vem do JS ou servidor
         return;
       }
 

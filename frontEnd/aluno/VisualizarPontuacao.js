@@ -30,35 +30,30 @@ document.getElementById("buscar").addEventListener("click", async () => {
 
     if (!response.ok || data.erro) return showMessage(data.mensagem || "Erro ao buscar pontuação.");
 
+    //Recebemos a resposta do JSON e pegamos o totalLivros e classificação e preenche os campos HTML pelo ID
     document.getElementById("Livroslidos").value = data.totalLivros;
     document.getElementById("classif").value = data.classificacao;
 
-    /*querySelector("tbody") -> encontra o corpo da tabela.
-    tbody.innerHTML = "" limpa o que havia antes
-    forEach cria <tr>(linhas) para cada livro
-    appendChild coloca cada linha de livro na tabela*/
+    const tbody = document.querySelector("tbody"); // querySelector("tbody") -> encontra o corpo da tabela.
+    tbody.innerHTML = ""; // tbody.innerHTML = "" limpa o que havia antes
 
-    const tbody = document.querySelector("tbody");
-    tbody.innerHTML = "";
-
-    if (data.livros.length === 0) {
+    if (data.livros.length === 0) { //Caso não tenha sido retornado nenhum livro
       tbody.innerHTML = `<tr><td colspan="3">Nenhum livro lido.</td></tr>`;
       return;
     }
 
-    data.livros.forEach(livro => {
+    data.livros.forEach(livro => { //forEach cria <tr>(linhas) para cada livro
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${livro.codigo}</td>
         <td>${livro.titulo}</td>
         <td>${livro.datahora}</td>
       `;
-      tbody.appendChild(tr);
+      tbody.appendChild(tr); //appendChild coloca cada linha de livro na tabela
     });
 
   } catch (err) {
     return showMessage("Erro ao conectar com o servidor.");
   }
 });
-
 // JS preencheu dinamicamente o HTML
