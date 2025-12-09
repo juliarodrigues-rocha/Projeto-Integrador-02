@@ -1,7 +1,6 @@
 import { AlunoRepository } from '../repositories/alunoRepository.js';
 import Aluno from '../models/Aluno.js';
 import Comunicado from '../models/Comunicado.js';
-import { openDb } from "../database/conexao.js";
 
 export const cadastrarAluno = async (req, res) => {
   const { ra, nome, email, telefone } = req.body;
@@ -48,9 +47,7 @@ export const cadastrarAluno = async (req, res) => {
   }
 };
 
-/**
- * Consulta a pontuação de um aluno específico (últimos 6 meses)
- */
+//Consulta a pontuação de um aluno específico (últimos 6 meses)
 export const VisualizarPontuacao = async (req, res) => {
   const { ra } = req.params;
 
@@ -87,15 +84,15 @@ export const VisualizarPontuacao = async (req, res) => {
 };
 
 
-/**
- * Classificação geral de todos os alunos no último semestre (6 meses)
- * Retorna o total de livros lidos, classificação e resumo por nível.
- */
+/*Classificação geral de todos os alunos no último semestre (6 meses)
+ Retorna o total de livros lidos, classificação e resumo por nível.*/
 export const ClassificacaoGeral = async (_req, res) => {
   try {
     // busca no repository
     const linhas = await AlunoRepository.buscarClassificacaoGeral();
 
+    //Para cada aluno, calcula a classificação
+    //.map() -> Monta um novo array a partir do array original
     const ranking = linhas.map((linha) => {
       const total = Number(linha.totalLivros) || 0;
       const classificacao =
@@ -104,6 +101,7 @@ export const ClassificacaoGeral = async (_req, res) => {
         total <= 20 ? "Leitor Ativo" :
         "Leitor Extremo";
 
+      //Retorna um objeto organizado que será colocado dentro do array ranking
       return {
         ra: linha.ra,
         nome: linha.nome,
@@ -112,6 +110,7 @@ export const ClassificacaoGeral = async (_req, res) => {
       };
     });
 
+    //Cria o resumo geral
     const resumo = {
       iniciantes: 0,
       regulares: 0,
@@ -119,6 +118,7 @@ export const ClassificacaoGeral = async (_req, res) => {
       extremos: 0,
     };
 
+    //Conta qnts alunos existem em cada categoria percorrendo o ranking
     for (const aluno of ranking) {
       switch (aluno.classificacao) {
         case "Leitor Iniciante": resumo.iniciantes++; break;
@@ -128,6 +128,7 @@ export const ClassificacaoGeral = async (_req, res) => {
       }
     }
 
+    //Retorna resposta para o front
     return res.status(200).json({
       erro: false,
       totalAlunos: ranking.length,

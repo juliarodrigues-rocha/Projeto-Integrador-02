@@ -1,3 +1,6 @@
+/* Pega os elementos do HTML para poder alterar eles via JS
+Por exemplo: tabelaLivros aponta para o <tbody> onde a tabela será preenchida.*/
+
 const API_BASE = "http://localhost:3000";
 
 const tabelaLivros = document.getElementById("tabelaLivros");
@@ -22,6 +25,8 @@ const campoQuantidade = document.getElementById("editarQuantidade");
 
 let livrosCache = [];
 
+// Funções a seguir apenas de formatação
+
 function formatarData(dataISO) {
   if (!dataISO) return "--";
   const somenteData = dataISO.split("T")[0] || dataISO;
@@ -45,6 +50,8 @@ function formatarDataHora(data, hora) {
   return horaFmt === "--" ? dataFmt : `${dataFmt} às ${horaFmt}`;
 }
 
+// Função de exibir mensagens nas tabelas -> Usadas antes da requisição
+
 function exibirMensagem(tbody, colunas, mensagem) {
   tbody.innerHTML = `<tr><td class="mensagem-vazia" colspan="${colunas}">${mensagem}</td></tr>`;
 }
@@ -52,6 +59,8 @@ function exibirMensagem(tbody, colunas, mensagem) {
 function setCarregando(tbody, colunas) {
   exibirMensagem(tbody, colunas, "Carregando...");
 }
+
+//Buscar JSON do BackEnd
 
 async function fetchJson(url) {
   const resposta = await fetch(url);
@@ -68,13 +77,24 @@ async function fetchJson(url) {
   return resposta.json();
 }
 
+/* Renderizar tabelas -> Ela pega o array de livros do backend e transforma em linha de tabela HTML
+JS preenche a tabela inteira dinamicamente */
+
 function renderizarLivros(livros = []) {
   if (!livros.length) {
+    // Evita renderizar tabela vazia
     exibirMensagem(tabelaLivros, 7, "Nenhum livro cadastrado.");
     return;
   }
 
+  /*Armazena os livros em uma variável global (livrosCache) usada por outras partes do script
+  (ex: quando o usuário clica em editar, o handler busca o livro por código dentro desse cache) */
+
   livrosCache = livros;
+
+  /* livros.map((livro) => { ... }) percorre cada livro e retorna uma string HTML representando uma <tr> para esse livro.
+  A tabelaLivros.innerHTML = ... -> substitui o conteúdo do <tbody id="tabelaLivros"> com esse HTML gerado —> isto atualiza a tabela inteira de uma vez
+  O .map() pega um array e transforma cada item em outra coisa, criando um novo array.*/
 
   tabelaLivros.innerHTML = livros
     .map((livro) => {
@@ -97,6 +117,11 @@ function renderizarLivros(livros = []) {
         </tr>
       `;
     })
+
+    /*Os botões de ação têm atributos data-acao e data-codigo —> isso permite o event delegation 
+    (um único click listener em tabelaLivros captura cliques e lê data-codigo para identificar o livro)*/
+
+    // .join("") -> concatena todas as strings num único HTML.
     .join("");
 }
 
@@ -147,6 +172,9 @@ function renderizarHistorico(emprestimos = []) {
     .join("");
 }
 
+/*Atualiza: total de títulos, exemplares disponíveis, exemplares emprestados
+E escreve nos <strong> do HTML*/
+
 function atualizarResumo(livros = [], emprestimosAtivos = []) {
   const totalTitulos = livros.length;
   const totalDisponiveis = livros.reduce((acc, livro) => {
@@ -160,10 +188,23 @@ function atualizarResumo(livros = [], emprestimosAtivos = []) {
   livrosEmprestadosSpan.textContent = totalEmprestados;
 }
 
+
+/* Essa função 
+-> mostra Carregando... nas tabelas
+-> faz 3 chamadas simultâneas ao backend
+-> preenche as 3 tabelas
+-> atualiza o resumo
+
+É chamada quando:
+->clica em "Atualizar"
+-> página carrega */
+
 async function carregarGerenciamento() {
   setCarregando(tabelaLivros, 7);
   setCarregando(tabelaEmprestados, 6);
   setCarregando(tabelaHistorico, 6);
+
+   // Promise.all() faz as três ao mesmo tempo → mais rápido.
 
   try {
     const [livros, emprestimosAtivos, historico] = await Promise.all([
@@ -209,14 +250,30 @@ function mostrarMensagemEdicao(texto, tipo = "erro") {
   mensagemEdicao.style.color = tipo === "sucesso" ? "#1f7a3b" : "#c62828";
 }
 
+// Sempre que alguém clicar em QUALQUER coisa dentro da tabela de livros, executa essa função -> delegação de eventos
 tabelaLivros.addEventListener("click", (event) => {
+
+  /*event.target = o elemento exato onde você clicou (ex: pode ser o texto do botão)
+
+  .closest("button[data-acao]") -> sobe na hierarquia até achar um <button> que tenha o atributo data-acao.
+
+  Então ele encontrará -> <button class="btn editar" data-acao="editar" data-codigo="123">Editar</button>
+  <button class="btn deletar" data-acao="deletar" data-codigo="123">Deletar</button>*/
   const botao = event.target.closest("button[data-acao]");
   if (!botao) return;
 
+
+  // Pega o código do livro a partir do botão
+  // .dataset pega atributos HTML que começam com data-
   const codigo = botao.dataset.codigo;
+
+  // Procurando o livro correspondente no cache. LivrosCache -> Lista vinda do back
+  // Find procura dentro derssa lista o livro com o código clicado
+  //Converte tudo para string
   const livro = livrosCache.find((l) => String(l.CODIGO) === String(codigo));
   if (!livro) return;
 
+  // Verifica qual ação o botão pede
   if (botao.dataset.acao === "editar") {
     abrirModalEdicao(livro);
   } else if (botao.dataset.acao === "deletar") {
@@ -226,6 +283,8 @@ tabelaLivros.addEventListener("click", (event) => {
 
 btnCancelarEdicao.addEventListener("click", fecharModalEdicao);
 
+//Aqui cria um objeto com os dados atualizados preenchidos pelo usuário
+// Executa envio do formulário, quando clicar em "salvar" é ativado
 formEditarLivro.addEventListener("submit", async (event) => {
   event.preventDefault();
   const codigo = campoCodigo.value;

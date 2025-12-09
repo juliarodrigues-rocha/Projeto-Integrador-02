@@ -1,8 +1,10 @@
+//A msg é escondida por padrão, mas quando precisa ser mostrada, remove a class "hidden"
 function showMessage(msg) {
   document.getElementById("msgText").innerText = msg;
   document.getElementById("msgBox").classList.remove("hidden");
 }
 
+//"Esconde" A mensagem quando clica em "ok"
 document.getElementById("msgClose").addEventListener("click", () => {
   document.getElementById("msgBox").classList.add("hidden");
 });
@@ -29,6 +31,11 @@ document.getElementById("buscar").addEventListener("click", async () => {
     document.getElementById("Livroslidos").value = data.totalLivros;
     document.getElementById("classif").value = data.classificacao;
 
+    /*querySelector("tbody") -> encontra o corpo da tabela.
+    tbody.innerHTML = "" limpa o que havia antes
+    forEach cria <tr>(linhas) para cada livro
+    appendChild coloca cada linha de livro na tabela*/
+
     const tbody = document.querySelector("tbody");
     tbody.innerHTML = "";
 
@@ -51,3 +58,5 @@ document.getElementById("buscar").addEventListener("click", async () => {
     return showMessage("Erro ao conectar com o servidor.");
   }
 });
+
+// JS preencheu dinamicamente o HTML
